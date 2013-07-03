@@ -1,6 +1,6 @@
 # jquery-contract
 
-With jquery-contract you habe something like `.on` but for Plugin calls. This is useful if you want to apply Plugin calls to further added DOM nodes.
+With jquery-contract you have something like `.on` but for Plugin calls. This is useful if you want to apply Plugin calls to further added DOM nodes.
 
 ## Example
 
