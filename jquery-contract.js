@@ -5,7 +5,9 @@
       callback.call(this)
     })
     
-    var observer = new MutationObserver(function(mutations) {
+    var observe, observer = new MutationObserver(function(mutations) {
+      observer.disconnect()
+      
       mutations.forEach(function(mutation) {
         Array.prototype.slice.call(mutation.addedNodes).forEach(function(node) {
           if ($(node).is(selector)) callback.call(node)
@@ -14,8 +16,11 @@
           })
         })
       })
+      
+      observe()
     })
  
-    observer.observe(this[0], { childList: true, subtree: true })
+    observe = observer.observe.bind(observer, this[0], { childList: true, subtree: true })
+    observe()
   }
 }(jQuery)
