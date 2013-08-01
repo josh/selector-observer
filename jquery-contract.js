@@ -1,26 +1,55 @@
 !function($) {
-  $.fn.contract = function(selector, callback) {
-    // call callback for existing elements
-    $(selector, this).each(function() {
-      callback.call(this)
-    })
-    
-    var observe, observer = new MutationObserver(function(mutations) {
-      observer.disconnect()
+  var Observer = function(target, selector, callback) {
+    var self = this
+    this.target = target
+    this.selector = selector
+    this.callback = callback
+    this.observer = new MutationObserver(function(mutations) {
+      var contracts = self.target.data('contracts')
+      contracts.forEach(function(contract) {
+        contract.disconnect()
+      })
       
       mutations.forEach(function(mutation) {
         Array.prototype.slice.call(mutation.addedNodes).forEach(function(node) {
-          if ($(node).is(selector)) callback.call(node)
+          if ($(node).is(selector)) self.callback.call(node)
           $(selector, node).each(function() {
-            callback.call(this)
+            self.callback.call(this)
           })
         })
       })
-      
-      observe()
+
+      contracts.forEach(function(contract) {
+        contract.observe()
+      })
     })
- 
-    observe = observer.observe.bind(observer, this[0], { childList: true, subtree: true })
-    observe()
+    
+    // call callback for existing elements
+    $(selector, target).each(function() {
+      self.callback.call(this)
+    })
+    
+    this.observe()
+  }
+  
+  Observer.prototype.disconnect = function() {
+    this.observer.disconnect()
+  }
+  
+  Observer.prototype.observe = function() {
+    this.observer.observe(this.target[0], { childList: true, subtree: true })
+  }
+  
+  $.fn.contract = function(selector, callback) {
+    var contracts = this.data('contracts')
+    if (!contracts) contracts = []
+    var contract = contracts.filter(function(c) { return c.selector === selector })
+    if (contract.length) {
+      contract[0].callback = callback
+      return
+    }
+    var observer = new Observer(this, selector, callback)
+    contracts.push(observer)
+    this.data('contracts', contracts)
   }
 }(jQuery)
