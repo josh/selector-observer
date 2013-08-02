@@ -40,7 +40,7 @@
     this.observer.observe(this.target[0], { childList: true, subtree: true })
   }
   
-  $.fn.contract = function(selector, callback) {
+  $.fn.observe = function(selector, callback) {
     var contracts = this.data('contracts')
     if (!contracts) contracts = []
     var contract = contracts.filter(function(c) { return c.selector === selector })
