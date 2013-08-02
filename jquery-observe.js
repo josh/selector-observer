@@ -10,9 +10,14 @@
         contract.disconnect()
       })
       
+      var childsOnly = self.selector[0] === '>'
+        , search = childsOnly ? self.selector.substr(1) : self.selector
+      
       mutations.forEach(function(mutation) {
         Array.prototype.slice.call(mutation.addedNodes).forEach(function(node) {
-          if ($(node).is(selector)) self.callback.call(node)
+          if (childsOnly && self.target[0] !== $(node).parent()[0]) return
+          if ($(node).is(search)) self.callback.call(node)
+          if (childsOnly) return
           $(selector, node).each(function() {
             self.callback.call(this)
           })
