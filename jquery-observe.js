@@ -57,4 +57,4 @@
     contracts.push(observer)
     this.data('contracts', contracts)
   }
-}(jQuery)
+}(window.Zepto || window.jQuery)

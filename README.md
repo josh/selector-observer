@@ -5,10 +5,14 @@ With jquery-contract you have something like `.on` but for Plugin calls. This is
 ## Example
 
 ```js
-$('#some-id').contract('div.draggable', function() {
+$('#some-id').observe('div.draggable', function() {
   $(this).draggable()
 })
 ```
+
+## Zepto.js
+
+Works with [Zepto.js](zeptojs.com), too, if you include Zepto's `data` module.
 
 ## MIT License
 Copyright (c) 2013 Markus Ast
