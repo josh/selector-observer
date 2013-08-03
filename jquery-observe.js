@@ -5,27 +5,29 @@
     this.selector = selector
     this.callback = callback
     this.observer = new MutationObserver(function(mutations) {
-      var contracts = self.target.data('contracts')
-      contracts.forEach(function(contract) {
-        contract.disconnect()
-      })
+      setTimeout(function() {        
+        var contracts = self.target.data('contracts')
+        contracts.forEach(function(contract) {
+          contract.disconnect()
+        })
       
-      var childsOnly = self.selector[0] === '>'
-        , search = childsOnly ? self.selector.substr(1) : self.selector
+        var childsOnly = self.selector[0] === '>'
+          , search = childsOnly ? self.selector.substr(1) : self.selector
       
-      mutations.forEach(function(mutation) {
-        Array.prototype.slice.call(mutation.addedNodes).forEach(function(node) {
-          if (childsOnly && self.target[0] !== $(node).parent()[0]) return
-          if ($(node).is(search)) self.callback.call(node)
-          if (childsOnly) return
-          $(selector, node).each(function() {
-            self.callback.call(this)
+        mutations.forEach(function(mutation) {
+          Array.prototype.slice.call(mutation.addedNodes).forEach(function(node) {
+            if (childsOnly && self.target[0] !== $(node).parent()[0]) return
+            if ($(node).is(search)) self.callback.call(node)
+            if (childsOnly) return
+            $(selector, node).each(function() {
+              self.callback.call(this)
+            })
           })
         })
-      })
 
-      contracts.forEach(function(contract) {
-        contract.observe()
+        contracts.forEach(function(contract) {
+          contract.observe()
+        })
       })
     })
     
