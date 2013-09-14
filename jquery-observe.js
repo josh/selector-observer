@@ -1,4 +1,5 @@
 !function($) {
+  var MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver
   var Observer = function(target, selector, callback) {
     var self = this
     this.target = target
