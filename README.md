@@ -4,8 +4,12 @@ With jquery-contract you have something like `.on` but for Plugin calls. This is
 
 ```json
 { "name": "jquery-observe",
-  "version": "0.1.1" }
+  "version": "0.2.0" }
 ```
+
+## API
+
+    .observe(selector, onAdded, onRemoved)
 
 ## Example
 
