@@ -57,5 +57,6 @@
     var observer = new Observer(this, selector, onAdded, onRemoved)
     contracts.push(observer)
     this.data('contracts', contracts)
+    return this
   }
 }(window.Zepto || window.jQuery)

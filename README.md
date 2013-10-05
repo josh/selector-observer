@@ -1,10 +1,10 @@
-# jquery-contract
+# jquery-observe
 
-With jquery-contract you have something like `.on` but for Plugin calls. This is useful if you want to apply Plugin calls to further added DOM nodes.
+With jquery-observe you have something like `.on` but for Plugin calls. This is useful if you want to apply Plugin calls to further added DOM nodes.
 
 ```json
 { "name": "jquery-observe",
-  "version": "0.2.0" }
+  "version": "0.2.1" }
 ```
 
 ## API
