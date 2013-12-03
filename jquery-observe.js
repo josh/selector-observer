@@ -46,6 +46,7 @@
   }
   
   $.fn.observe = function(selector, onAdded, onRemoved) {
+    if (!this.length) return
     var contracts = this.data('contracts')
     if (!contracts) contracts = []
     var contract = contracts.filter(function(c) { return c.selector === selector })
