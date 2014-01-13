@@ -42,7 +42,10 @@
   }
   
   Observer.prototype.observe = function() {
-    this.observer.observe(this.target[0], { childList: true, subtree: true })
+    var self = this
+    this.target.forEach(function(target) {
+      self.observer.observe(target, { childList: true, subtree: true })
+    })
   }
   
   $.fn.observe = function(selector, onAdded, onRemoved) {
@@ -55,7 +58,8 @@
       contract[0].onRemoved = onRemoved
       return
     }
-    var observer = new Observer(this, selector, onAdded, onRemoved)
+    var target = 'makeArray' in $ ? $.makeArray(this) : this
+    var observer = new Observer(target, selector, onAdded, onRemoved)
     contracts.push(observer)
     this.data('contracts', contracts)
     return this

@@ -4,7 +4,7 @@ With jquery-observe you have something like `.on` but for Plugin calls. This is 
 
 ```json
 { "name": "jquery-observe",
-  "version": "0.2.1" }
+  "version": "0.2.2" }
 ```
 
 ## API

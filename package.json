@@ -4,7 +4,7 @@
     "name": "Markus Ast",
     "email": "npm.m@rkusa.st"
   },
-  "version": "0.2.1",
+  "version": "0.2.2",
   "homepage": "https://github.com/rkusa/jquery-observe",
   "devDependencies": {
     "uglify-js": "2.x.x"
