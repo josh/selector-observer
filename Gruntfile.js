@@ -34,8 +34,12 @@ module.exports = function(grunt) {
       test: {
         options: {
           globals: {
+            'SelectorObserver': false,
             'module': false,
             'test': false,
+            'asyncTest': false,
+            'expect': false,
+            'start': false,
             'ok': false,
             'equal': false
           }
