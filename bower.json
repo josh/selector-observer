@@ -1,0 +1,17 @@
+{
+  "name": "selector-observer",
+  "version": "0.0.0",
+  "main": "selector-observer.js",
+  "ignore": [
+    ".*",
+    "Gruntfile.js",
+    "package.json",
+    "test/"
+  ],
+  "dependencies": {
+    "selector-set": "~1.0"
+  },
+  "devDependencies": {
+    "qunit": "~1.13.0"
+  }
+}
