@@ -1,6 +1,8 @@
 (function(window) {
   'use strict';
 
+  var Promise = window.Promise;
+
    // Detect prefixed Element#matches function.
   var docElem = window.document.documentElement;
   var matches = (docElem.webkitMatchesSelector ||
@@ -40,7 +42,7 @@
   SelectorObserver.prototype.didMatchObserver = function(el, observer) {
     var key = '__selectorObserver' + observer.id;
     if (!el[key]) {
-      setTimeout(function() {
+      Promise.cast().then(function() {
         observer.handler.call(el);
       }, 0);
       el[key] = true;
