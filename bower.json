@@ -9,6 +9,7 @@
     "test/"
   ],
   "dependencies": {
+    "es6-promise": "~0.1",
     "selector-set": "~1.0"
   },
   "devDependencies": {
