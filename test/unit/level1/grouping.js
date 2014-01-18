@@ -11,7 +11,6 @@
     expect(4);
 
     var fixture = document.getElementById('qunit-fixture');
-
     var observer = new SelectorObserver(fixture);
 
     var h1 = document.createElement('h1');
