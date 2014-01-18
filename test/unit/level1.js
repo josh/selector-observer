@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  module('level1 - grouping', {
+  module('CSS1', {
     teardown: function() {
       SelectorObserver.stop();
     }
@@ -46,5 +46,51 @@
 
     fixture.appendChild(h1);
     fixture.appendChild(h2);
+  });
+
+  test('class selector', function() {
+    expect(2);
+
+    var fixture = document.getElementById('qunit-fixture');
+    var observer = new SelectorObserver(fixture);
+
+    var h1 = document.createElement('h1');
+    h1.className = 'pastoral';
+
+    observer.observe('H1.pastoral', function() {
+      equal(this, h1);
+      fixture.removeChild(h1);
+
+      return function() {
+        equal(h1, this);
+        start();
+      };
+    });
+    stop();
+
+    fixture.appendChild(h1);
+  });
+
+  test('id selector', function() {
+    expect(2);
+
+    var fixture = document.getElementById('qunit-fixture');
+    var observer = new SelectorObserver(fixture);
+
+    var h1 = document.createElement('h1');
+    h1.id = 'z98y';
+
+    observer.observe('#z98y', function() {
+      equal(this, h1);
+      fixture.removeChild(h1);
+
+      return function() {
+        equal(h1, this);
+        start();
+      };
+    });
+    stop();
+
+    fixture.appendChild(h1);
   });
 })();
