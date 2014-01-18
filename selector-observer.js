@@ -2,6 +2,7 @@
   'use strict';
 
   var Promise = window.Promise;
+  var SelectorSet = window.SelectorSet;
   var slice = Array.prototype.slice;
 
   function Deferred() {
@@ -36,7 +37,7 @@
     this.root = root;
     this.observers = [];
     this.uid = 0;
-    this.trackedElements = [];
+    this.selectorSet = new SelectorSet();
 
     var intervalId = setInterval(function() {
       self.checkForChanges();
@@ -54,17 +55,17 @@
 
 
   SelectorObserver.prototype.observe = function(selector, handler) {
-    this.observers.push({
+    var observer = {
       id: ++this.uid,
       selector: selector,
-      handler: handler
-    });
+      handler: handler,
+      elements: []
+    };
+    this.selectorSet.add(selector, observer);
+    this.observers.push(observer);
   };
 
   SelectorObserver.prototype.checkForChanges = function() {
-    var elements = slice.call(this.root.getElementsByTagName('*'), 0);
-    elements = elements.concat(this.trackedElements, 0);
-
     function runHandler(handler, el, deferred) {
       Promise.cast().then(function() {
         var result = handler.call(el, el);
@@ -76,24 +77,37 @@
       });
     }
 
+    var observer, observerKey, deferred;
+    var e, el;
+
+    var m, matches = this.selectorSet.queryAll(this.root);
+    for (m = 0; m < matches.length; m++) {
+      var match = matches[m];
+      observer = match.data;
+      observerKey = '__selectorObserver' + observer.id;
+
+      for (e = 0; e < match.elements.length; e++) {
+        el = match.elements[e];
+
+        if (!el[observerKey]) {
+          deferred = new Deferred();
+          el[observerKey] = deferred;
+          observer.elements.push(el);
+          runHandler(observer.handler, el, deferred);
+        }
+      }
+    }
+
     var i;
     for (i = 0; i < this.observers.length; i++) {
-      var observer = this.observers[i];
-      var observerKey = '__selectorObserver' + observer.id;
-      var matches = slice.call(this.root.querySelectorAll(observer.selector), 0);
+      observer = this.observers[i];
+      observerKey = '__selectorObserver' + observer.id;
+      matches = slice.call(this.root.querySelectorAll(observer.selector), 0);
 
-      var e;
-      for (e = 0; e < elements.length; e++) {
-        var el = elements[e];
+      for (e = 0; e < observer.elements.length; e++) {
+        el = observer.elements[e];
 
-        if (matches.indexOf(el) !== -1) {
-          if (!el[observerKey]) {
-            var deferred = new Deferred();
-            el[observerKey] = deferred;
-            this.trackedElements.push(el);
-            runHandler(observer.handler, el, deferred);
-          }
-        } else {
+        if (matches.indexOf(el) === -1) {
           if (el[observerKey]) {
             el[observerKey].resolve();
             delete el[observerKey];
