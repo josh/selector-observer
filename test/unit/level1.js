@@ -1,6 +1,10 @@
 (function() {
   'use strict';
 
+  // Test selectors allowed per CSS1 spec
+  //
+  //   http://www.w3.org/TR/CSS1/
+  //
   module('CSS1', {
     teardown: function() {
       SelectorObserver.stop();
@@ -77,20 +81,24 @@
     var fixture = document.getElementById('qunit-fixture');
     var observer = new SelectorObserver(fixture);
 
-    var h1 = document.createElement('h1');
-    h1.id = 'z98y';
+    var p = document.createElement('p');
+    p.id = 'z98y';
+
+    observer.observe('H1#z98y', function() {
+      ok(false);
+    });
 
     observer.observe('#z98y', function() {
-      equal(this, h1);
-      fixture.removeChild(h1);
+      equal(this, p);
+      fixture.removeChild(p);
 
       return function() {
-        equal(h1, this);
+        equal(p, this);
         start();
       };
     });
     stop();
 
-    fixture.appendChild(h1);
+    fixture.appendChild(p);
   });
 })();
