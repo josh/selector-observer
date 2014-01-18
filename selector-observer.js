@@ -40,7 +40,7 @@
 
     var intervalId = setInterval(function() {
       self.checkForChanges();
-    }, 0);
+    }, 10);
     monitors.push(intervalId);
   }
 

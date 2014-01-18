@@ -24,8 +24,8 @@
     equal(undefined, result);
   });
 
-  asyncTest('observe selector on document SelectorObserver', function() {
-    expect(5);
+  test('observe selector on document SelectorObserver', function() {
+    expect(4);
     var observer = new SelectorObserver(document);
 
     var fixture = document.getElementById('qunit-fixture');
@@ -33,7 +33,7 @@
     var foo = document.createElement('div');
     foo.className = 'foo';
 
-    var result = observer.observe('.foo', function(el) {
+    observer.observe('.foo', function(el) {
       equal(foo, this);
       equal(foo, el);
 
@@ -46,9 +46,8 @@
         start();
       };
     });
+    stop();
 
     fixture.appendChild(foo);
-
-    equal(undefined, result);
   });
 })();
