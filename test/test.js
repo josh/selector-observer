@@ -3,7 +3,7 @@
 
   module('SelectorObserver', {
     teardown: function() {
-      window.stopAllChangeMonitors();
+      SelectorObserver.stop();
     }
   });
 
@@ -25,17 +25,28 @@
   });
 
   asyncTest('observe selector on document SelectorObserver', function() {
-    expect(2);
+    expect(5);
     var observer = new SelectorObserver(document);
 
-    var result = observer.observe('.foo', function() {
-      ok(true);
-      start();
-    });
+    var fixture = document.getElementById('qunit-fixture');
 
     var foo = document.createElement('div');
     foo.className = 'foo';
-    var fixture = document.getElementById('qunit-fixture');
+
+    var result = observer.observe('.foo', function(el) {
+      equal(foo, this);
+      equal(foo, el);
+
+      fixture.removeChild(foo);
+
+      return function(el) {
+        equal(foo, this);
+        equal(foo, el);
+
+        start();
+      };
+    });
+
     fixture.appendChild(foo);
 
     equal(undefined, result);

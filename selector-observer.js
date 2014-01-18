@@ -2,13 +2,31 @@
   'use strict';
 
   var Promise = window.Promise;
+  var slice = Array.prototype.slice;
 
-   // Detect prefixed Element#matches function.
-  var docElem = window.document.documentElement;
-  var matches = (docElem.webkitMatchesSelector ||
-                  docElem.mozMatchesSelector ||
-                  docElem.oMatchesSelector ||
-                  docElem.msMatchesSelector);
+  function Deferred() {
+    this.resolved = null;
+    this.pending = [];
+  }
+
+  Deferred.prototype.resolve = function() {
+    if (!this.resolved) {
+      this.resolved = Promise.cast();
+      var p = this.pending.length;
+      while (p--) {
+        this.resolved.then(this.pending[p]);
+      }
+    }
+  };
+
+  Deferred.prototype.then = function(onFulfilled) {
+    if (this.resolved) {
+      this.resolved.then(onFulfilled);
+    } else {
+      this.pending.push(onFulfilled);
+    }
+  };
+
 
   var monitors = [];
 
@@ -18,6 +36,7 @@
     this.root = root;
     this.observers = [];
     this.uid = 0;
+    this.trackedElements = [];
 
     var intervalId = setInterval(function() {
       self.checkForChanges();
@@ -25,45 +44,65 @@
     monitors.push(intervalId);
   }
 
-  SelectorObserver.prototype.observe = function(selector, handler) {
-    this.observers.push({id: ++this.uid, selector: selector, handler: handler});
-  };
-
-  SelectorObserver.prototype.revalidateObservers = function(el) {
-    var o = this.observers.length;
-    while (o--) {
-      var observer = this.observers[o];
-      if (matches.call(el, observer.selector)) {
-        this.didMatchObserver(el, observer);
-      }
-    }
-  };
-
-  SelectorObserver.prototype.didMatchObserver = function(el, observer) {
-    var key = '__selectorObserver' + observer.id;
-    if (!el[key]) {
-      Promise.cast().then(function() {
-        observer.handler.call(el);
-      }, 0);
-      el[key] = true;
-    }
-  };
-
-  SelectorObserver.prototype.checkForChanges = function() {
-    var els = this.root.getElementsByTagName('*');
-    var e = els.length;
-    while (e--) {
-      this.revalidateObservers(els[e]);
-    }
-  };
-
   // For tests
-  window.stopAllChangeMonitors = function() {
+  SelectorObserver.stop = function() {
     var m = monitors.length;
     while (m--) {
       clearInterval(monitors[m]);
     }
   };
+
+
+  SelectorObserver.prototype.observe = function(selector, handler) {
+    this.observers.push({
+      id: ++this.uid,
+      selector: selector,
+      handler: handler
+    });
+  };
+
+  SelectorObserver.prototype.checkForChanges = function() {
+    var elements = slice.call(this.root.getElementsByTagName('*'), 0);
+    elements = elements.concat(this.trackedElements, 0);
+
+    function runHandler(handler, el, deferred) {
+      Promise.cast().then(function() {
+        var result = handler.call(el, el);
+        if (typeof result === 'function') {
+          deferred.then(function() {
+            result.call(el, el);
+          });
+        }
+      });
+    }
+
+    var i;
+    for (i = 0; i < this.observers.length; i++) {
+      var observer = this.observers[i];
+      var observerKey = '__selectorObserver' + observer.id;
+      var matches = slice.call(this.root.querySelectorAll(observer.selector), 0);
+
+      var e = elements.length;
+      while (e--) {
+        var el = elements[e];
+
+        if (matches.indexOf(el) !== -1) {
+          if (!el[observerKey]) {
+            var deferred = new Deferred();
+            el[observerKey] = deferred;
+            this.trackedElements.push(el);
+            runHandler(observer.handler, el, deferred);
+          }
+        } else {
+          if (el[observerKey]) {
+            el[observerKey].resolve();
+            delete el[observerKey];
+          }
+        }
+      }
+    }
+  };
+
 
   window.SelectorObserver = SelectorObserver;
 })(this);
