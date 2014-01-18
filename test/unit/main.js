@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  module('SelectorObserver', {
+  module('main', {
     teardown: function() {
       SelectorObserver.stop();
     }
