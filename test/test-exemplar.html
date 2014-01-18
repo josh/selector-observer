@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Test Suite</title>
+  <link rel="stylesheet" href="../bower_components/qunit/qunit/qunit.css">
+</head>
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+
+  <script src="../bower_components/es6-promise/promise.js"></script>
+  <script src="./exemplar-selector-observer.js"></script>
+
+  <script src="../bower_components/qunit/qunit/qunit.js"></script>
+  <script>
+    QUnit.config.testTimeout = 1000;
+  </script>
+  <script src="./unit/main.js"></script>
+  <script src="./unit/scheduling.js"></script>
+  <script src="./unit/level1.js"></script>
+  <script src="./unit/level2.js"></script>
+  <script src="./unit/level3.js"></script>
+</body>
+</html>
