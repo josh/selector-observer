@@ -82,8 +82,8 @@
       var observerKey = '__selectorObserver' + observer.id;
       var matches = slice.call(this.root.querySelectorAll(observer.selector), 0);
 
-      var e = elements.length;
-      while (e--) {
+      var e;
+      for (e = 0; e < elements.length; e++) {
         var el = elements[e];
 
         if (matches.indexOf(el) !== -1) {
