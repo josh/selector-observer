@@ -44,7 +44,7 @@ module.exports = function(grunt) {
             'equal': false
           }
         },
-        src: ['test/*.js']
+        src: ['test/unit/*.js']
       }
     },
     qunit: {
