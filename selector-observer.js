@@ -90,15 +90,6 @@
     this.root.addEventListener('oAnimationStart', this.scheduleCheckForChanges, true);
     this.root.addEventListener('MSAnimationStart', this.scheduleCheckForChanges, true);
     this.root.addEventListener('webkitAnimationStart', this.scheduleCheckForChanges, true);
-    this.root.addEventListener('DOMAttributeNameChanged', this.scheduleCheckForChanges, true);
-    this.root.addEventListener('DOMCharacterDataModified', this.scheduleCheckForChanges, true);
-    this.root.addEventListener('DOMElementNameChanged', this.scheduleCheckForChanges, true);
-    this.root.addEventListener('DOMNodeInserted', this.scheduleCheckForChanges, true);
-    this.root.addEventListener('DOMNodeInsertedIntoDocument', this.scheduleCheckForChanges, true);
-    this.root.addEventListener('DOMNodeRemoved', this.scheduleCheckForChanges, true);
-    this.root.addEventListener('DOMNodeRemovedFromDocument', this.scheduleCheckForChanges, true);
-    this.root.addEventListener('DOMSubtreeModified', this.scheduleCheckForChanges, true);
-
     if (MutationObserver) {
       var observer = new MutationObserver(this.checkForChanges);
       var config = {
@@ -108,6 +99,15 @@
         subtree: true
       };
       observer.observe(this.root, config);
+    } else {
+      this.root.addEventListener('DOMAttributeNameChanged', this.scheduleCheckForChanges, true);
+      this.root.addEventListener('DOMCharacterDataModified', this.scheduleCheckForChanges, true);
+      this.root.addEventListener('DOMElementNameChanged', this.scheduleCheckForChanges, true);
+      this.root.addEventListener('DOMNodeInserted', this.scheduleCheckForChanges, true);
+      this.root.addEventListener('DOMNodeInsertedIntoDocument', this.scheduleCheckForChanges, true);
+      this.root.addEventListener('DOMNodeRemoved', this.scheduleCheckForChanges, true);
+      this.root.addEventListener('DOMNodeRemovedFromDocument', this.scheduleCheckForChanges, true);
+      this.root.addEventListener('DOMSubtreeModified', this.scheduleCheckForChanges, true);
     }
   }
 
