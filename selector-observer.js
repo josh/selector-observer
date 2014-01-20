@@ -48,9 +48,31 @@
   var uid = 0;
   function watch(selector){
     var key = 'SelectorObserver-' + uid++;
-    var node = document.createTextNode('@-webkit-keyframes ' + key + ' { from { clip: rect(1px, auto, auto, auto); } to { clip: rect(0px, auto, auto, auto); } }');
+
+    var node = document.createTextNode('@keyframes ' + key + ' { from { clip: rect(1px, auto, auto, auto); } to { clip: rect(0px, auto, auto, auto); } }');
     keyframes.appendChild(node);
+    node = document.createTextNode('@-moz-keyframes ' + key + ' { from { clip: rect(1px, auto, auto, auto); } to { clip: rect(0px, auto, auto, auto); } }');
+    keyframes.appendChild(node);
+    node = document.createTextNode('@-ms-keyframes ' + key + ' { from { clip: rect(1px, auto, auto, auto); } to { clip: rect(0px, auto, auto, auto); } }');
+    keyframes.appendChild(node);
+    node = document.createTextNode('@-o-keyframes ' + key + ' { from { clip: rect(1px, auto, auto, auto); } to { clip: rect(0px, auto, auto, auto); } }');
+    keyframes.appendChild(node);
+    node = document.createTextNode('@-webkit-keyframes ' + key + ' { from { clip: rect(1px, auto, auto, auto); } to { clip: rect(0px, auto, auto, auto); } }');
+    keyframes.appendChild(node);
+
     var rule = selector + ' { animation-duration: 0.01s; animation-name: ' + key + ' !important; }';
+    styles.sheet.insertRule(rule, 0);
+
+    rule = selector + ' { -ms-animation-duration: 0.01s; -ms-animation-name: ' + key + ' !important; }';
+    styles.sheet.insertRule(rule, 0);
+
+    rule = selector + ' { -moz-animation-duration: 0.01s; -moz-animation-name: ' + key + ' !important; }';
+    styles.sheet.insertRule(rule, 0);
+
+    rule = selector + ' { -o-animation-duration: 0.01s; -o-animation-name: ' + key + ' !important; }';
+    styles.sheet.insertRule(rule, 0);
+
+    rule = selector + ' { -webkit-animation-duration: 0.01s; -webkit-animation-name: ' + key + ' !important; }';
     styles.sheet.insertRule(rule, 0);
   }
 
@@ -65,6 +87,9 @@
     this.checkForChanges = bind(this.checkForChanges, this);
 
     this.root.addEventListener('animationstart', this.scheduleCheckForChanges, true);
+    this.root.addEventListener('oAnimationStart', this.scheduleCheckForChanges, true);
+    this.root.addEventListener('MSAnimationStart', this.scheduleCheckForChanges, true);
+    this.root.addEventListener('webkitAnimationStart', this.scheduleCheckForChanges, true);
     this.root.addEventListener('DOMAttributeNameChanged', this.scheduleCheckForChanges, true);
     this.root.addEventListener('DOMCharacterDataModified', this.scheduleCheckForChanges, true);
     this.root.addEventListener('DOMElementNameChanged', this.scheduleCheckForChanges, true);
