@@ -6,20 +6,22 @@
   //   http://www.w3.org/TR/CSS1/
   //
   module('CSS1', {
+    setup: function() {
+      this.fixture = document.getElementById('qunit-fixture');
+      this.observer = new SelectorObserver(this.fixture);
+    },
     teardown: function() {
-      SelectorObserver.stop();
+      this.observer.disconnect();
     }
   });
 
   test('add element type selector', function() {
     expect(1);
 
-    var fixture = document.getElementById('qunit-fixture');
-    var observer = new SelectorObserver(fixture);
-
+    var fixture = this.fixture;
     var h1 = document.createElement('h1');
 
-    observer.observe('H1', function() {
+    this.observer.observe('H1', function() {
       equal(this, h1);
       start();
     });
@@ -31,12 +33,10 @@
   test('remove element type selector', function() {
     expect(1);
 
-    var fixture = document.getElementById('qunit-fixture');
-    var observer = new SelectorObserver(fixture);
-
+    var fixture = this.fixture;
     var h1 = document.createElement('h1');
 
-    observer.observe('H1', function() {
+    this.observer.observe('H1', function() {
       fixture.removeChild(h1);
 
       return function() {
@@ -52,13 +52,11 @@
   test('reinsert element type selector', function() {
     expect(3);
 
-    var fixture = document.getElementById('qunit-fixture');
-    var observer = new SelectorObserver(fixture);
-
+    var fixture = this.fixture;
     var h1 = document.createElement('h1');
 
     var count = 0;
-    observer.observe('H1', function() {
+    this.observer.observe('H1', function() {
       count++;
       equal(this, h1);
 
@@ -84,13 +82,11 @@
   test('add element with class selector', function() {
     expect(1);
 
-    var fixture = document.getElementById('qunit-fixture');
-    var observer = new SelectorObserver(fixture);
-
+    var fixture = this.fixture;
     var h1 = document.createElement('h1');
     h1.className = 'pastoral';
 
-    observer.observe('H1.pastoral', function() {
+    this.observer.observe('H1.pastoral', function() {
       equal(this, h1);
       start();
     });
@@ -102,12 +98,10 @@
   test('add className with class selector', function() {
     expect(1);
 
-    var fixture = document.getElementById('qunit-fixture');
-    var observer = new SelectorObserver(fixture);
-
+    var fixture = this.fixture;
     var h1 = document.createElement('h1');
 
-    observer.observe('H1.pastoral', function() {
+    this.observer.observe('H1.pastoral', function() {
       equal(this, h1);
       start();
     });
@@ -120,13 +114,11 @@
   test('remove element with class selector', function() {
     expect(1);
 
-    var fixture = document.getElementById('qunit-fixture');
-    var observer = new SelectorObserver(fixture);
-
+    var fixture = this.fixture;
     var h1 = document.createElement('h1');
     h1.className = 'pastoral';
 
-    observer.observe('H1.pastoral', function() {
+    this.observer.observe('H1.pastoral', function() {
       fixture.removeChild(h1);
 
       return function() {
@@ -142,13 +134,11 @@
   test('change className with class selector', function() {
     expect(1);
 
-    var fixture = document.getElementById('qunit-fixture');
-    var observer = new SelectorObserver(fixture);
-
+    var fixture = this.fixture;
     var h1 = document.createElement('h1');
     h1.className = 'pastoral';
 
-    observer.observe('H1.pastoral', function() {
+    this.observer.observe('H1.pastoral', function() {
       h1.className = 'sidenote';
 
       return function() {
@@ -164,13 +154,11 @@
   test('change class attribute with class selector', function() {
     expect(1);
 
-    var fixture = document.getElementById('qunit-fixture');
-    var observer = new SelectorObserver(fixture);
-
+    var fixture = this.fixture;
     var h1 = document.createElement('h1');
     h1.className = 'pastoral';
 
-    observer.observe('H1.pastoral', function() {
+    this.observer.observe('H1.pastoral', function() {
       h1.setAttribute('class', 'sidenote');
 
       return function() {
@@ -186,17 +174,15 @@
   test('add element with id selector', function() {
     expect(1);
 
-    var fixture = document.getElementById('qunit-fixture');
-    var observer = new SelectorObserver(fixture);
-
+    var fixture = this.fixture;
     var p = document.createElement('p');
     p.id = 'z98y';
 
-    observer.observe('H1#z98y', function() {
+    this.observer.observe('H1#z98y', function() {
       ok(false);
     });
 
-    observer.observe('#z98y', function() {
+    this.observer.observe('#z98y', function() {
       equal(this, p);
       start();
     });
@@ -208,16 +194,14 @@
   test('change id with id selector', function() {
     expect(1);
 
-    var fixture = document.getElementById('qunit-fixture');
-    var observer = new SelectorObserver(fixture);
-
+    var fixture = this.fixture;
     var p = document.createElement('p');
 
-    observer.observe('H1#z98y', function() {
+    this.observer.observe('H1#z98y', function() {
       ok(false);
     });
 
-    observer.observe('#z98y', function() {
+    this.observer.observe('#z98y', function() {
       equal(this, p);
       start();
     });
@@ -230,13 +214,11 @@
   test('remove element with id selector', function() {
     expect(1);
 
-    var fixture = document.getElementById('qunit-fixture');
-    var observer = new SelectorObserver(fixture);
-
+    var fixture = this.fixture;
     var p = document.createElement('p');
     p.id = 'z98y';
 
-    observer.observe('#z98y', function() {
+    this.observer.observe('#z98y', function() {
       fixture.removeChild(p);
 
       return function() {
@@ -252,13 +234,11 @@
   test('change id with id selector', function() {
     expect(1);
 
-    var fixture = document.getElementById('qunit-fixture');
-    var observer = new SelectorObserver(fixture);
-
+    var fixture = this.fixture;
     var p = document.createElement('p');
     p.id = 'z98y';
 
-    observer.observe('#z98y', function() {
+    this.observer.observe('#z98y', function() {
       p.id = 'z98x';
 
       return function() {
@@ -274,13 +254,11 @@
   test('change id attribute with id selector', function() {
     expect(1);
 
-    var fixture = document.getElementById('qunit-fixture');
-    var observer = new SelectorObserver(fixture);
-
+    var fixture = this.fixture;
     var p = document.createElement('p');
     p.id = 'z98y';
 
-    observer.observe('#z98y', function() {
+    this.observer.observe('#z98y', function() {
       p.setAttribute('id', 'z98x');
 
       return function() {
@@ -296,13 +274,11 @@
   test('add element to parent with contextual selector', function() {
     expect(1);
 
-    var fixture = document.getElementById('qunit-fixture');
-    var observer = new SelectorObserver(fixture);
-
+    var fixture = this.fixture;
     var h1 = document.createElement('h1');
     var em = document.createElement('em');
 
-    observer.observe('H1 EM', function() {
+    this.observer.observe('H1 EM', function() {
       equal(this, em);
       start();
     });
@@ -315,13 +291,11 @@
   test('remove child element from parent with contextual selector', function() {
     expect(1);
 
-    var fixture = document.getElementById('qunit-fixture');
-    var observer = new SelectorObserver(fixture);
-
+    var fixture = this.fixture;
     var h1 = document.createElement('h1');
     var em = document.createElement('em');
 
-    observer.observe('H1 EM', function() {
+    this.observer.observe('H1 EM', function() {
       h1.removeChild(em);
 
       return function() {
@@ -338,13 +312,11 @@
   test('remove parent element with contextual selector', function() {
     expect(1);
 
-    var fixture = document.getElementById('qunit-fixture');
-    var observer = new SelectorObserver(fixture);
-
+    var fixture = this.fixture;
     var h1 = document.createElement('h1');
     var em = document.createElement('em');
 
-    observer.observe('H1 EM', function() {
+    this.observer.observe('H1 EM', function() {
       fixture.removeChild(h1);
 
       return function() {
@@ -361,14 +333,12 @@
   test('group tag selectors', function() {
     expect(4);
 
-    var fixture = document.getElementById('qunit-fixture');
-    var observer = new SelectorObserver(fixture);
-
+    var fixture = this.fixture;
     var h1 = document.createElement('h1');
     var h2 = document.createElement('h2');
 
     var count = 0;
-    observer.observe('H1, H2, H3', function() {
+    this.observer.observe('H1, H2, H3', function() {
       count++;
       if (count === 1) {
         equal(this, h1);

@@ -35,8 +35,6 @@
   };
 
 
-  var monitors = [];
-
   function SelectorObserver(root) {
     var self = this;
 
@@ -45,20 +43,14 @@
     this.uid = 0;
     this.trackedElements = [];
 
-    var intervalId = setInterval(function() {
+    this.intervalId = setInterval(function() {
       self.checkForChanges();
     }, 10);
-    monitors.push(intervalId);
   }
 
-  // For tests
-  SelectorObserver.stop = function() {
-    var m = monitors.length;
-    while (m--) {
-      clearInterval(monitors[m]);
-    }
+  SelectorObserver.prototype.disconnect = function() {
+    clearInterval(this.intervalId);
   };
-
 
   SelectorObserver.prototype.observe = function(selector, handler) {
     this.observers.push({

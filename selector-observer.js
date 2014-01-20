@@ -48,8 +48,6 @@
   }
 
 
-  var sets = [];
-
   function SelectorObserver(root) {
     var self = this;
 
@@ -90,22 +88,11 @@
     //   subtree: true
     // };
     // observer.observe(root, config);
-
-    sets.push(self);
   }
 
-  SelectorObserver.prototype.stop = function() {
+  SelectorObserver.prototype.disconnect = function() {
     this.stopped = true;
   };
-
-  // For tests
-  SelectorObserver.stop = function() {
-    var s = sets.length;
-    while (s--) {
-      sets[s].stop();
-    }
-  };
-
 
   SelectorObserver.prototype.observe = function(selector, handler) {
     var observer = {

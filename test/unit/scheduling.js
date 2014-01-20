@@ -4,27 +4,28 @@
   module('scheduling', {
     setup: function() {
       QUnit.config.current.ignoreGlobalErrors = true;
+      this.fixture = document.getElementById('qunit-fixture');
+      this.observer = new SelectorObserver(this.fixture);
     },
     teardown: function() {
+      this.observer.disconnect();
       QUnit.config.current.ignoreGlobalErrors = false;
-      SelectorObserver.stop();
     }
   });
 
   test('observers are ran in defined order', function() {
     expect(2);
 
-    var fixture = document.getElementById('qunit-fixture');
-    var observer = new SelectorObserver(fixture);
+    var fixture = this.fixture;
 
     var count = 0;
-    observer.observe('.foo', function() {
+    this.observer.observe('.foo', function() {
       equal(++count, 1);
       start();
     });
     stop();
 
-    observer.observe('.bar', function() {
+    this.observer.observe('.bar', function() {
       equal(++count, 2);
       start();
     });
@@ -44,11 +45,10 @@
   // test('observers with the same selector are ran in defined order', function() {
   //   expect(4);
   //
-  //   var fixture = document.getElementById('qunit-fixture');
-  //   var observer = new SelectorObserver(fixture);
+  //   var fixture = this.fixture;
   //
   //   var count = 0;
-  //   observer.observe('.foo', function() {
+  //   this.observer.observe('.foo', function() {
   //     ++count;
   //     if (count === 1) {
   //       equal(count, 1);
@@ -60,7 +60,7 @@
   //   stop();
   //   stop();
   //
-  //   observer.observe('.foo', function() {
+  //   this.observer.observe('.foo', function() {
   //     ++count;
   //     if (count === 3) {
   //       equal(count, 3);
@@ -85,8 +85,7 @@
   test('observers unmwatch handlers are ran async in defined order', function() {
     expect(4);
 
-    var fixture = document.getElementById('qunit-fixture');
-    var observer = new SelectorObserver(fixture);
+    var fixture = this.fixture;
 
     var foo = document.createElement('div');
     foo.className = 'foo';
@@ -95,7 +94,7 @@
     bar.className = 'bar';
 
     var count = 0;
-    observer.observe('.foo', function() {
+    this.observer.observe('.foo', function() {
       equal(++count, 1);
       fixture.removeChild(foo);
 
@@ -106,7 +105,7 @@
     });
     stop();
 
-    observer.observe('.bar', function() {
+    this.observer.observe('.bar', function() {
       equal(++count, 2);
       fixture.removeChild(bar);
 
@@ -124,18 +123,17 @@
   test('observers that throw an exception dont prevent others from running', function() {
     expect(2);
 
-    var fixture = document.getElementById('qunit-fixture');
-    var observer = new SelectorObserver(fixture);
+    var fixture = this.fixture;
 
     var count = 0;
-    observer.observe('.foo', function() {
+    this.observer.observe('.foo', function() {
       equal(++count, 1);
       start();
       throw('error');
     });
     stop();
 
-    observer.observe('.bar', function() {
+    this.observer.observe('.bar', function() {
       equal(++count, 2);
       start();
     });
