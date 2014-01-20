@@ -41,13 +41,10 @@
   };
 
 
-  var uid = 0;
-
   function SelectorObserver(root) {
     this.root = root;
     this.observers = [];
     this.trackedElements = [];
-    this.handlers = new WeakMap();
 
     this.scheduleCheckForChanges = bind(this.scheduleCheckForChanges, this);
     this.checkForChanges = bind(this.checkForChanges, this);
@@ -62,9 +59,9 @@
 
   SelectorObserver.prototype.observe = function(selector, handler) {
     this.observers.push({
-      id: ++uid,
       selector: selector,
-      handler: handler
+      handler: handler,
+      handlers: new WeakMap()
     });
   };
 
@@ -92,24 +89,24 @@
     var i;
     for (i = 0; i < this.observers.length; i++) {
       var observer = this.observers[i];
-      var observerKey = '__selectorObserver' + observer.id;
       var matches = slice.call(this.root.querySelectorAll(observer.selector), 0);
 
       var e;
       for (e = 0; e < elements.length; e++) {
         var el = elements[e];
+        var deferred = observer.handlers.get(el);
 
         if (matches.indexOf(el) !== -1) {
-          if (!el[observerKey]) {
-            var deferred = new Deferred();
-            el[observerKey] = deferred;
+          if (!deferred) {
+            deferred = new Deferred();
+            observer.handlers.set(el, deferred);
             this.trackedElements.push(el);
             runHandler(observer.handler, el, deferred);
           }
         } else {
-          if (el[observerKey]) {
-            el[observerKey].resolve();
-            delete el[observerKey];
+          if (deferred) {
+            deferred.resolve();
+            observer.handlers['delete'](el);
           }
         }
       }
