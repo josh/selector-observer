@@ -90,6 +90,12 @@
     this.root.addEventListener('oAnimationStart', this.scheduleCheckForChanges, true);
     this.root.addEventListener('MSAnimationStart', this.scheduleCheckForChanges, true);
     this.root.addEventListener('webkitAnimationStart', this.scheduleCheckForChanges, true);
+
+    var self = this;
+    this.root.addEventListener('DOMNodeInserted', function(event) {
+      event.target.onpropertychange = self.scheduleCheckForChanges;
+    }, true);
+
     if (MutationObserver) {
       var observer = new MutationObserver(this.checkForChanges);
       var config = {
