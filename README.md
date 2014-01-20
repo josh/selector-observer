@@ -1,6 +1,19 @@
 # Selector Observer
 
 
+## Usage
+
+``` javascript
+var observer = new SelectorObserver(document);
+observer.observe(‘form’, function() {
+  this.addEventListener(‘submit’, onSubmit);
+  return function() {
+    this.removeEventListener(‘submit’, onSubmit);
+  };
+});
+````
+
+
 ## Installation
 
 Available on [Bower](http://bower.io) as **selector-observer**.
