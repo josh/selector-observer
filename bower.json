@@ -10,7 +10,8 @@
   ],
   "dependencies": {
     "es6-promise": "~0.1",
-    "selector-set": "~1.0"
+    "selector-set": "~1.0",
+    "WeakMap": "git://github.com/Polymer/WeakMap.git"
   },
   "devDependencies": {
     "qunit": "~1.13.0"
