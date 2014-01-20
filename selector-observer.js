@@ -73,7 +73,6 @@
     this.root.addEventListener('DOMNodeRemoved', this.scheduleCheckForChanges, true);
     this.root.addEventListener('DOMNodeRemovedFromDocument', this.scheduleCheckForChanges, true);
     this.root.addEventListener('DOMSubtreeModified', this.scheduleCheckForChanges, true);
-    setInterval(this.scheduleCheckForChanges, 100);
 
     if (MutationObserver) {
       var observer = new MutationObserver(this.checkForChanges);
