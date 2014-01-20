@@ -11,45 +11,74 @@
     }
   });
 
-  test('group tag selectors', function() {
-    expect(4);
+  test('add element type selector', function() {
+    expect(1);
 
     var fixture = document.getElementById('qunit-fixture');
     var observer = new SelectorObserver(fixture);
 
     var h1 = document.createElement('h1');
-    var h2 = document.createElement('h2');
+
+    observer.observe('H1', function() {
+      equal(this, h1);
+      start();
+    });
+    stop();
+
+    fixture.appendChild(h1);
+  });
+
+  test('remove element type selector', function() {
+    expect(1);
+
+    var fixture = document.getElementById('qunit-fixture');
+    var observer = new SelectorObserver(fixture);
+
+    var h1 = document.createElement('h1');
+
+    observer.observe('H1', function() {
+      fixture.removeChild(h1);
+
+      return function() {
+        equal(h1, this);
+        start();
+      };
+    });
+    stop();
+
+    fixture.appendChild(h1);
+  });
+
+  test('reinsert element type selector', function() {
+    expect(3);
+
+    var fixture = document.getElementById('qunit-fixture');
+    var observer = new SelectorObserver(fixture);
+
+    var h1 = document.createElement('h1');
 
     var count = 0;
-    observer.observe('H1, H2, H3', function() {
+    observer.observe('H1', function() {
       count++;
+      equal(this, h1);
+
       if (count === 1) {
-        equal(this, h1);
         fixture.removeChild(h1);
-      } else if (count === 2) {
-        equal(this, h2);
-        fixture.removeChild(h2);
+      } else if (count === 3) {
+        start();
       } else {
         ok(false);
       }
 
       return function() {
         count++;
-        if (count === 3) {
-          equal(h1, this);
-        } else if (count === 4) {
-          equal(h2, this);
-        } else {
-          ok(false);
-        }
-        start();
+        equal(this, h1);
+        fixture.appendChild(h1);
       };
     });
     stop();
-    stop();
 
     fixture.appendChild(h1);
-    fixture.appendChild(h2);
   });
 
   test('add element with class selector', function() {
@@ -327,5 +356,46 @@
 
     fixture.appendChild(h1);
     h1.appendChild(em);
+  });
+
+  test('group tag selectors', function() {
+    expect(4);
+
+    var fixture = document.getElementById('qunit-fixture');
+    var observer = new SelectorObserver(fixture);
+
+    var h1 = document.createElement('h1');
+    var h2 = document.createElement('h2');
+
+    var count = 0;
+    observer.observe('H1, H2, H3', function() {
+      count++;
+      if (count === 1) {
+        equal(this, h1);
+        fixture.removeChild(h1);
+      } else if (count === 2) {
+        equal(this, h2);
+        fixture.removeChild(h2);
+      } else {
+        ok(false);
+      }
+
+      return function() {
+        count++;
+        if (count === 3) {
+          equal(h1, this);
+        } else if (count === 4) {
+          equal(h2, this);
+        } else {
+          ok(false);
+        }
+        start();
+      };
+    });
+    stop();
+    stop();
+
+    fixture.appendChild(h1);
+    fixture.appendChild(h2);
   });
 })();
