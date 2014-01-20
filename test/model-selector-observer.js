@@ -9,6 +9,7 @@
   'use strict';
 
   var Promise = window.Promise;
+  var WeakMap = window.WeakMap;
   var slice = Array.prototype.slice;
   var bind = function(fn, self) {
     return function() {
@@ -46,6 +47,7 @@
     this.root = root;
     this.observers = [];
     this.trackedElements = [];
+    this.handlers = new WeakMap();
 
     this.scheduleCheckForChanges = bind(this.scheduleCheckForChanges, this);
     this.checkForChanges = bind(this.checkForChanges, this);

@@ -2,6 +2,7 @@
   'use strict';
 
   var Promise = window.Promise;
+  var WeakMap = window.WeakMap;
   var SelectorSet = window.SelectorSet;
   var slice = Array.prototype.slice;
 
@@ -54,6 +55,7 @@
     this.root = root;
     this.observers = [];
     this.selectorSet = new SelectorSet();
+    this.handlers = new WeakMap();
 
     document.addEventListener('animationstart', function() {
       self.checkForChanges();
