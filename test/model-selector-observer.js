@@ -10,6 +10,11 @@
 
   var Promise = window.Promise;
   var slice = Array.prototype.slice;
+  var bind = function(fn, self) {
+    return function() {
+      return fn.apply(self, arguments);
+    };
+  };
 
   function Deferred() {
     this.resolved = null;
@@ -35,29 +40,36 @@
   };
 
 
-  function SelectorObserver(root) {
-    var self = this;
+  var uid = 0;
 
+  function SelectorObserver(root) {
     this.root = root;
     this.observers = [];
-    this.uid = 0;
     this.trackedElements = [];
 
-    this.intervalId = setInterval(function() {
-      self.checkForChanges();
-    }, 10);
+    this.scheduleCheckForChanges = bind(this.scheduleCheckForChanges, this);
+    this.checkForChanges = bind(this.checkForChanges, this);
+
+    this.scheduleCheckForChangesId = setInterval(this.scheduleCheckForChanges, 0);
   }
 
   SelectorObserver.prototype.disconnect = function() {
-    clearInterval(this.intervalId);
+    clearInterval(this.scheduleCheckForChangesId);
+    clearInterval(this.checkForChangesId);
   };
 
   SelectorObserver.prototype.observe = function(selector, handler) {
     this.observers.push({
-      id: ++this.uid,
+      id: ++uid,
       selector: selector,
       handler: handler
     });
+  };
+
+  SelectorObserver.prototype.scheduleCheckForChanges = function() {
+    if (typeof this.checkForChangesId !== 'number') {
+      this.checkForChangesId = setTimeout(this.checkForChanges, 0);
+    }
   };
 
   SelectorObserver.prototype.checkForChanges = function() {
@@ -100,6 +112,8 @@
         }
       }
     }
+
+    this.checkForChangesId = null;
   };
 
 
