@@ -23,25 +23,21 @@
     observer.disconnect();
   });
 
-  test('observe selector on document SelectorObserver', function() {
-    expect(4);
-    var observer = new SelectorObserver(document);
+  test('observe handler element is this', function() {
+    expect(2);
 
     var fixture = document.getElementById('qunit-fixture');
+    var observer = new SelectorObserver(fixture);
 
     var foo = document.createElement('div');
     foo.className = 'foo';
 
-    observer.observe('.foo', function(el) {
+    observer.observe('.foo', function() {
       equal(foo, this);
-      equal(foo, el);
-
       fixture.removeChild(foo);
 
-      return function(el) {
+      return function() {
         equal(foo, this);
-        equal(foo, el);
-
         observer.disconnect();
         start();
       };
@@ -49,5 +45,49 @@
     stop();
 
     fixture.appendChild(foo);
+  });
+
+  test('observe handler el as first argument', function() {
+    expect(2);
+
+    var fixture = document.getElementById('qunit-fixture');
+    var observer = new SelectorObserver(fixture);
+
+    var foo = document.createElement('div');
+    foo.className = 'foo';
+
+    observer.observe('.foo', function(el) {
+      equal(foo, el);
+      fixture.removeChild(foo);
+
+      return function(el) {
+        equal(foo, el);
+        observer.disconnect();
+        start();
+      };
+    });
+    stop();
+
+    fixture.appendChild(foo);
+  });
+
+  test('disconnect prevents new observe events', function() {
+    expect(0);
+
+    var fixture = document.getElementById('qunit-fixture');
+    var observer = new SelectorObserver(fixture);
+
+    var foo = document.createElement('div');
+    foo.className = 'foo';
+
+    observer.observe('.foo', function() {
+      ok(false);
+    });
+
+    observer.disconnect();
+    fixture.appendChild(foo);
+
+    stop();
+    setTimeout(start, 100);
   });
 })();
