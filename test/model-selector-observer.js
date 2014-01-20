@@ -1,3 +1,10 @@
+// Model implementation of SelectorObserver.
+//
+// This should serve as a model of correctness for guiding the implemenation
+// of "selector-observer.js". Tests should pass on both implemenations.
+// Prefer easy to understand code over any sort of efficiency. No
+// optimizations.
+//
 (function(window) {
   'use strict';
 
