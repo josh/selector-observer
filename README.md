@@ -5,10 +5,10 @@
 
 ``` javascript
 var observer = new SelectorObserver(document);
-observer.observe(‘form’, function() {
-  this.addEventListener(‘submit’, onSubmit);
+observer.observe('form', function() {
+  this.addEventListener('submit', onSubmit);
   return function() {
-    this.removeEventListener(‘submit’, onSubmit);
+    this.removeEventListener('submit', onSubmit);
   };
 });
 ````
