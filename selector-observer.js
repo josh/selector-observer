@@ -29,43 +29,101 @@
   };
 
 
-  var monitors = [];
+
+  var styles = document.createElement('style');
+  styles.type = 'text/css';
+  document.head.appendChild(styles);
+
+  var keyframes = document.createElement('style');
+  keyframes.type = 'text/css';
+  document.head.appendChild(keyframes);
+
+  var uid = 0;
+  function watch(selector){
+    var key = 'SelectorObserver-' + uid++;
+    var node = document.createTextNode('@-webkit-keyframes ' + key + ' { from { clip: rect(1px, auto, auto, auto); } to { clip: rect(0px, auto, auto, auto); } }');
+    keyframes.appendChild(node);
+    var rule = selector + ' { animation-duration: 0.01s; animation-name: ' + key + ' !important; }';
+    styles.sheet.insertRule(rule, 0);
+  }
+
+
+  var sets = [];
 
   function SelectorObserver(root) {
     var self = this;
 
     this.root = root;
     this.observers = [];
-    this.uid = 0;
     this.selectorSet = new SelectorSet();
 
-    var intervalId = setInterval(function() {
+    document.addEventListener('animationstart', function() {
       self.checkForChanges();
-    }, 10);
-    monitors.push(intervalId);
+    }, true);
+
+    document.addEventListener('DOMNodeInserted', function() {
+      self.checkForChanges();
+    }, true);
+
+    document.addEventListener('DOMNodeRemoved', function() {
+      self.checkForChanges();
+    }, true);
+
+    document.addEventListener('DOMNodeRemovedFromDocument', function() {
+      self.checkForChanges();
+    }, true);
+
+    document.addEventListener('DOMSubtreeModified', function() {
+      self.checkForChanges();
+    }, true);
+
+    setInterval(function() {
+      self.checkForChanges();
+    }, 100);
+
+    // var observer = new MutationObserver(function() {
+    //   self.checkForChanges();
+    // });
+    // var config = {
+    //   attributes: true,
+    //   childList: true,
+    //   subtree: true
+    // };
+    // observer.observe(root, config);
+
+    sets.push(self);
   }
+
+  SelectorObserver.prototype.stop = function() {
+    this.stopped = true;
+  };
 
   // For tests
   SelectorObserver.stop = function() {
-    var m = monitors.length;
-    while (m--) {
-      clearInterval(monitors[m]);
+    var s = sets.length;
+    while (s--) {
+      sets[s].stop();
     }
   };
 
 
   SelectorObserver.prototype.observe = function(selector, handler) {
     var observer = {
-      id: ++this.uid,
+      id: uid++,
       selector: selector,
       handler: handler,
       elements: []
     };
+    watch(selector);
     this.selectorSet.add(selector, observer);
     this.observers.push(observer);
   };
 
   SelectorObserver.prototype.checkForChanges = function() {
+    if (this.stopped) {
+      return;
+    }
+
     function runHandler(handler, el, deferred) {
       Promise.cast().then(function() {
         var result = handler.call(el, el);
