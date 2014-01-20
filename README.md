@@ -1,5 +1,15 @@
 # Selector Observer
 
+
+## Installation
+
+Available on [Bower](http://bower.io) as **selector-observer**.
+
+```
+$ bower install selector-observer
+```
+
+
 ## See Also
 
 * [@csuwildcat](github.com/csuwildcat)'s "[I Want a DAMNodeInserted Event!](http://www.backalleycoder.com/2012/04/25/i-want-a-damnodeinserted/)" post
