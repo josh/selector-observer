@@ -76,7 +76,7 @@
 
   SelectorObserver.prototype.checkForChanges = function() {
     var elements = slice.call(this.root.getElementsByTagName('*'), 0);
-    elements = elements.concat(this.trackedElements, 0);
+    elements = elements.concat(this.trackedElements);
 
     function runHandler(handler, el, deferred) {
       Promise.cast().then(function() {
