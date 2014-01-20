@@ -23,6 +23,11 @@ $ bower install selector-observer
 ```
 
 
+## Browser Support
+
+Chrome (latest), Safari (6.0+), Firefox (latest) and IE 9+.
+
+
 ## See Also
 
 * [@csuwildcat](github.com/csuwildcat)'s "[I Want a DAMNodeInserted Event!](http://www.backalleycoder.com/2012/04/25/i-want-a-damnodeinserted/)" post
