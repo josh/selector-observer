@@ -120,6 +120,22 @@
     fixture.appendChild(bar);
   });
 
+  test('observers find existing matching elements', function() {
+    expect(1);
+
+    var fixture = this.fixture;
+
+    var foo = document.createElement('div');
+    foo.className = 'foo';
+    fixture.appendChild(foo);
+
+    this.observer.observe('.foo', function() {
+      ok(true);
+      start();
+    });
+    stop();
+  });
+
   test('observers that throw an exception dont prevent others from running', function() {
     expect(2);
 
