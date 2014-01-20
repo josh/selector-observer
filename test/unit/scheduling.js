@@ -41,46 +41,45 @@
     fixture.appendChild(bar);
   });
 
-  // FIXME
-  // test('observers with the same selector are ran in defined order', function() {
-  //   expect(4);
-  //
-  //   var fixture = this.fixture;
-  //
-  //   var count = 0;
-  //   this.observer.observe('.foo', function() {
-  //     ++count;
-  //     if (count === 1) {
-  //       equal(count, 1);
-  //     } else {
-  //       equal(count, 2);
-  //     }
-  //     start();
-  //   });
-  //   stop();
-  //   stop();
-  //
-  //   this.observer.observe('.foo', function() {
-  //     ++count;
-  //     if (count === 3) {
-  //       equal(count, 3);
-  //     } else {
-  //       equal(count, 4);
-  //     }
-  //     start();
-  //   });
-  //   stop();
-  //   stop();
-  //
-  //   var foo1 = document.createElement('div');
-  //   foo1.className = 'foo';
-  //
-  //   var foo2 = document.createElement('div');
-  //   foo2.className = 'foo';
-  //
-  //   fixture.appendChild(foo1);
-  //   fixture.appendChild(foo2);
-  // });
+  test('observers with the same selector are ran in defined order', function() {
+    expect(4);
+
+    var fixture = this.fixture;
+
+    var count = 0;
+    this.observer.observe('.foo', function() {
+      ++count;
+      if (count === 1) {
+        equal(count, 1);
+      } else {
+        equal(count, 2);
+      }
+      start();
+    });
+    stop();
+    stop();
+
+    this.observer.observe('.foo', function() {
+      ++count;
+      if (count === 3) {
+        equal(count, 3);
+      } else {
+        equal(count, 4);
+      }
+      start();
+    });
+    stop();
+    stop();
+
+    var foo1 = document.createElement('div');
+    foo1.className = 'foo';
+
+    var foo2 = document.createElement('div');
+    foo2.className = 'foo';
+
+    fixture.appendChild(foo1);
+    fixture.appendChild(foo2);
+  });
 
   test('observers unmwatch handlers are ran async in defined order', function() {
     expect(4);

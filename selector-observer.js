@@ -5,6 +5,11 @@
   var WeakMap = window.WeakMap;
   var SelectorSet = window.SelectorSet;
   var slice = Array.prototype.slice;
+  var bind = function(fn, self) {
+    return function() {
+      return fn.apply(self, arguments);
+    };
+  };
 
   function Deferred() {
     this.resolved = null;
@@ -50,40 +55,22 @@
 
 
   function SelectorObserver(root) {
-    var self = this;
-
     this.root = root;
     this.observers = [];
     this.selectorSet = new SelectorSet();
     this.handlers = new WeakMap();
 
-    document.addEventListener('animationstart', function() {
-      self.checkForChanges();
-    }, true);
+    this.scheduleCheckForChanges = bind(this.scheduleCheckForChanges, this);
+    this.checkForChanges = bind(this.checkForChanges, this);
 
-    document.addEventListener('DOMNodeInserted', function() {
-      self.checkForChanges();
-    }, true);
+    document.addEventListener('animationstart', this.scheduleCheckForChanges, true);
+    document.addEventListener('DOMNodeInserted', this.scheduleCheckForChanges, true);
+    document.addEventListener('DOMNodeRemoved', this.scheduleCheckForChanges, true);
+    document.addEventListener('DOMNodeRemovedFromDocument', this.scheduleCheckForChanges, true);
+    document.addEventListener('DOMSubtreeModified', this.scheduleCheckForChanges, true);
+    setInterval(this.scheduleCheckForChanges, 100);
 
-    document.addEventListener('DOMNodeRemoved', function() {
-      self.checkForChanges();
-    }, true);
-
-    document.addEventListener('DOMNodeRemovedFromDocument', function() {
-      self.checkForChanges();
-    }, true);
-
-    document.addEventListener('DOMSubtreeModified', function() {
-      self.checkForChanges();
-    }, true);
-
-    setInterval(function() {
-      self.checkForChanges();
-    }, 100);
-
-    // var observer = new MutationObserver(function() {
-    //   self.checkForChanges();
-    // });
+    // var observer = new MutationObserver(this.checkForChanges);
     // var config = {
     //   attributes: true,
     //   childList: true,
@@ -106,6 +93,12 @@
     watch(selector);
     this.selectorSet.add(selector, observer);
     this.observers.push(observer);
+  };
+
+  SelectorObserver.prototype.scheduleCheckForChanges = function() {
+    if (typeof this.checkForChangesId !== 'number') {
+      this.checkForChangesId = setTimeout(this.checkForChanges, 0);
+    }
   };
 
   SelectorObserver.prototype.checkForChanges = function() {
@@ -162,6 +155,8 @@
         }
       }
     }
+
+    this.checkForChangesId = null;
   };
 
 
