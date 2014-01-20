@@ -4,6 +4,7 @@
   var Promise = window.Promise;
   var WeakMap = window.WeakMap;
   var SelectorSet = window.SelectorSet;
+  var MutationObserver = window.MutationObserver;
   var slice = Array.prototype.slice;
   var bind = function(fn, self) {
     return function() {
@@ -63,20 +64,27 @@
     this.scheduleCheckForChanges = bind(this.scheduleCheckForChanges, this);
     this.checkForChanges = bind(this.checkForChanges, this);
 
-    document.addEventListener('animationstart', this.scheduleCheckForChanges, true);
-    document.addEventListener('DOMNodeInserted', this.scheduleCheckForChanges, true);
-    document.addEventListener('DOMNodeRemoved', this.scheduleCheckForChanges, true);
-    document.addEventListener('DOMNodeRemovedFromDocument', this.scheduleCheckForChanges, true);
-    document.addEventListener('DOMSubtreeModified', this.scheduleCheckForChanges, true);
+    this.root.addEventListener('animationstart', this.scheduleCheckForChanges, true);
+    this.root.addEventListener('DOMAttributeNameChanged', this.scheduleCheckForChanges, true);
+    this.root.addEventListener('DOMCharacterDataModified', this.scheduleCheckForChanges, true);
+    this.root.addEventListener('DOMElementNameChanged', this.scheduleCheckForChanges, true);
+    this.root.addEventListener('DOMNodeInserted', this.scheduleCheckForChanges, true);
+    this.root.addEventListener('DOMNodeInsertedIntoDocument', this.scheduleCheckForChanges, true);
+    this.root.addEventListener('DOMNodeRemoved', this.scheduleCheckForChanges, true);
+    this.root.addEventListener('DOMNodeRemovedFromDocument', this.scheduleCheckForChanges, true);
+    this.root.addEventListener('DOMSubtreeModified', this.scheduleCheckForChanges, true);
     setInterval(this.scheduleCheckForChanges, 100);
 
-    // var observer = new MutationObserver(this.checkForChanges);
-    // var config = {
-    //   attributes: true,
-    //   childList: true,
-    //   subtree: true
-    // };
-    // observer.observe(root, config);
+    if (MutationObserver) {
+      var observer = new MutationObserver(this.checkForChanges);
+      var config = {
+        childList: true,
+        attributes: true,
+        characterData: true,
+        subtree: true
+      };
+      observer.observe(this.root, config);
+    }
   }
 
   SelectorObserver.prototype.disconnect = function() {
