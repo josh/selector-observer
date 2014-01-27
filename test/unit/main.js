@@ -9,6 +9,12 @@
     observer.disconnect();
   });
 
+  test('constructor requires a root node', function() {
+    throws(function() {
+      new SelectorObserver();
+    }, TypeError);
+  });
+
   test('invoke observe on document SelectorObserver with no arguments', function() {
     var observer = new SelectorObserver(document);
     var result = observer.observe();

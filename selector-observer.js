@@ -78,6 +78,10 @@
 
 
   function SelectorObserver(root) {
+    if (!root) {
+      throw new TypeError('Failed to construct \'SelectorObserver\': Argument must be a Node');
+    }
+
     this.root = root;
     this.observers = [];
     this.selectorSet = new SelectorSet();
