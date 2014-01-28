@@ -368,4 +368,34 @@
     fixture.appendChild(h1);
     fixture.appendChild(h2);
   });
+
+  function createFrame(fixture) {
+    var iframe = document.createElement('iframe');
+    fixture.appendChild(iframe);
+    var frameDocument = iframe.contentDocument;
+    var body = frameDocument.body;
+    if (!body) {
+      body = frameDocument.createElement('body');
+      frameDocument.appendChild(body);
+    }
+    return frameDocument;
+  }
+
+  test('add element to iframe', function() {
+    expect(1);
+
+    var doc = createFrame(this.fixture);
+    var observer = new SelectorObserver(doc.body);
+
+    var h1 = doc.createElement('h1');
+
+    observer.observe('H1', function() {
+      equal(this, h1);
+      observer.disconnect();
+      start();
+    });
+    stop();
+
+    doc.body.appendChild(h1);
+  });
 })();
