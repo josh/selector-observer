@@ -163,4 +163,155 @@
     fixture.appendChild(foo);
     fixture.appendChild(bar);
   });
+
+  test('observer scheduled correctly when add removes element', function() {
+    expect(8);
+
+    var count = 4;
+    var fixture = this.fixture;
+
+    this.observer.observe('.foo', function() {
+      if (!(count--)) {
+        start();
+        return;
+      }
+
+      equal(this.ran, 0);
+      this.ran = 1;
+
+      fixture.removeChild(foo);
+
+      return function() {
+        equal(this.ran, 1);
+        this.ran = 0;
+
+        fixture.appendChild(foo);
+      };
+    });
+    stop();
+
+    var foo = document.createElement('div');
+    foo.className = 'foo';
+    foo.ran = 0;
+
+    fixture.appendChild(foo);
+  });
+
+  test('observer scheduled correctly when add is deferred by setTimeout', function() {
+    expect(8);
+
+    var count = 4;
+    var fixture = this.fixture;
+
+    this.observer.observe('.foo', function() {
+      if (!(count--)) {
+        start();
+        return;
+      }
+
+      equal(this.ran, 0);
+      this.ran = 1;
+
+      setTimeout(function() {
+        fixture.removeChild(foo);
+      }, 0);
+
+      return function() {
+        equal(this.ran, 1);
+        this.ran = 0;
+
+        setTimeout(function() {
+          fixture.appendChild(foo);
+        }, 0);
+      };
+    });
+    stop();
+
+    var foo = document.createElement('div');
+    foo.className = 'foo';
+    foo.ran = 0;
+
+    setTimeout(function() {
+      fixture.appendChild(foo);
+    }, 0);
+  });
+
+  if (window.MutationObserver) {
+    test('observer scheduled correctly when remove is scheduled in next MutationObserver tick', function() {
+      expect(8);
+
+      var count = 4;
+      var fixture = this.fixture;
+
+      var foo = document.createElement('div');
+      foo.className = 'foo';
+      foo.ran = 0;
+
+      var observer = new MutationObserver(function() {
+        if (foo.parentNode === fixture) {
+          fixture.removeChild(foo);
+        }
+      });
+      var node = document.createTextNode('');
+      observer.observe(node, { characterData: true });
+
+      this.observer.observe('.foo', function() {
+        if (!(count--)) {
+          start();
+          return;
+        }
+
+        equal(this.ran, 0);
+        this.ran = 1;
+
+        node.data = count;
+
+        return function() {
+          equal(this.ran, 1);
+          this.ran = 0;
+
+          fixture.appendChild(foo);
+        };
+      });
+      stop();
+
+      fixture.appendChild(foo);
+    });
+  }
+
+  test('observer scheduled correctly when remove is scheduled in next Promise tick', function() {
+    expect(8);
+
+    var count = 4;
+    var fixture = this.fixture;
+
+    this.observer.observe('.foo', function() {
+      if (!(count--)) {
+        start();
+        return;
+      }
+
+      equal(this.ran, 0);
+      this.ran = 1;
+
+      new window.Promise(function(resolve) {
+        fixture.removeChild(foo);
+        resolve();
+      });
+
+      return function() {
+        equal(this.ran, 1);
+        this.ran = 0;
+
+        fixture.appendChild(foo);
+      };
+    });
+    stop();
+
+    var foo = document.createElement('div');
+    foo.className = 'foo';
+    foo.ran = 0;
+
+    fixture.appendChild(foo);
+  });
 })();
