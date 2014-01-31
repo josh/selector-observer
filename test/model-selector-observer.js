@@ -8,38 +8,17 @@
 (function(window) {
   'use strict';
 
-  var Promise = window.Promise;
   var WeakMap = window.WeakMap;
   var slice = Array.prototype.slice;
-  var bind = function(fn, self) {
+
+  function bind(fn, self) {
     return function() {
       return fn.apply(self, arguments);
     };
-  };
-
-  function Deferred() {
-    this.resolved = null;
-    this.pending = [];
   }
 
-  Deferred.prototype.resolve = function() {
-    if (!this.resolved) {
-      this.resolved = Promise.cast();
-      var p = this.pending.length;
-      while (p--) {
-        this.resolved.then(this.pending[p]);
-      }
-    }
-  };
-
-  Deferred.prototype.then = function(onFulfilled) {
-    if (this.resolved) {
-      this.resolved.then(onFulfilled);
-    } else {
-      this.pending.push(onFulfilled);
-    }
-  };
-
+  function noop() {
+  }
 
   function SelectorObserver(root) {
     if (!root) {
@@ -79,16 +58,7 @@
     var elements = slice.call(this.root.getElementsByTagName('*'), 0);
     elements = elements.concat(this.trackedElements);
 
-    function runHandler(handler, el, deferred) {
-      Promise.cast().then(function() {
-        var result = handler.call(el, el);
-        if (typeof result === 'function') {
-          deferred.then(function() {
-            result.call(el, el);
-          });
-        }
-      });
-    }
+    var tasks = [];
 
     var i;
     for (i = 0; i < this.observers.length; i++) {
@@ -98,21 +68,36 @@
       var e;
       for (e = 0; e < elements.length; e++) {
         var el = elements[e];
-        var deferred = observer.handlers.get(el);
+        var matched = observer.handlers.get(el);
 
         if (matches.indexOf(el) !== -1) {
-          if (!deferred) {
-            deferred = new Deferred();
-            observer.handlers.set(el, deferred);
+          if (!matched) {
+            observer.handlers.set(el, noop);
             this.trackedElements.push(el);
-            runHandler(observer.handler, el, deferred);
+            tasks.push({match: observer.handler, handlers: observer.handlers, el: el});
           }
         } else {
-          if (deferred) {
-            deferred.resolve();
+          if (matched) {
+            tasks.push({unmatch: matched, el: el});
             observer.handlers['delete'](el);
           }
         }
+      }
+    }
+
+    while (tasks.length) {
+      var task = tasks.shift();
+      if (task.match) {
+        try {
+          var result = task.match.call(task.el, task.el);
+          if (typeof result === 'function') {
+            task.handlers.set(task.el, result);
+          }
+        } catch (err) {}
+      } else if (task.unmatch) {
+        try {
+          task.unmatch.call(task.el, task.el);
+        } catch (err) {}
       }
     }
 
