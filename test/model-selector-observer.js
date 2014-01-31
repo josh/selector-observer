@@ -58,8 +58,6 @@
     var elements = slice.call(this.root.getElementsByTagName('*'), 0);
     elements = elements.concat(this.trackedElements);
 
-    var tasks = [];
-
     var i;
     for (i = 0; i < this.observers.length; i++) {
       var observer = this.observers[i];
@@ -72,32 +70,22 @@
 
         if (matches.indexOf(el) !== -1) {
           if (!matched) {
-            observer.handlers.set(el, noop);
             this.trackedElements.push(el);
-            tasks.push({match: observer.handler, handlers: observer.handlers, el: el});
+            var result = null;
+            try {
+              result = observer.handler.call(el, el);
+            } catch (err) {}
+            matched = (typeof result === 'function') ? result : noop;
+            observer.handlers.set(el, matched);
           }
         } else {
           if (matched) {
-            tasks.push({unmatch: matched, el: el});
+            try {
+              matched.call(el, el);
+            } catch (err) {}
             observer.handlers['delete'](el);
           }
         }
-      }
-    }
-
-    while (tasks.length) {
-      var task = tasks.shift();
-      if (task.match) {
-        try {
-          var result = task.match.call(task.el, task.el);
-          if (typeof result === 'function') {
-            task.handlers.set(task.el, result);
-          }
-        } catch (err) {}
-      } else if (task.unmatch) {
-        try {
-          task.unmatch.call(task.el, task.el);
-        } catch (err) {}
       }
     }
 
