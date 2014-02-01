@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    li.test {
+      background: yellow;
+    }
+  </style>
+  <script>
+    var styles = window.getComputedStyle(document.documentElement);
+
+    var prefix, eventName;
+    if ('animationName' in styles) {
+      prefix = '';
+      eventName = 'animationstart';
+    } else if ('MozAnimationName' in styles) {
+      prefix = '-moz-';
+      eventName = 'animationstart';
+    } else if ('msAnimationName' in styles) {
+      prefix = '-ms-';
+      eventName = 'MSAnimationStart';
+    } else if ('webkitAnimationName' in styles) {
+      prefix = '-webkit-';
+      eventName = 'webkitAnimationStart';
+    } else {
+      throw "no animation support";
+    }
+
+    var style = document.querySelector('style');
+
+    var keyframe = "@" + prefix + "keyframes nodeInserted {\n  from { outline: 1px solid transparent }\n  to { outline: 0px solid transparent }\n}";
+    console.log(keyframe);
+    var node = document.createTextNode(keyframe);
+    style.appendChild(node);
+
+    var rule = "li.test {\n  " + prefix + "animation-duration: 0.01s;\n  " + prefix + "animation-name: nodeInserted;\n}";
+    console.log(rule);
+    style.sheet.insertRule(rule, 0);
+
+    console.log(eventName)
+    document.addEventListener(eventName, function(event) {
+      if (event.animationName == 'nodeInserted') {
+        event.target.style.background = 'green';
+        event.target.textContent = 'Passed';
+      }
+    }, false);
+  </script>
+</head>
+<body>
+  <ul id="tests">
+    <li class="test">Pending</li>
+  </ul>
+  <script>
+    setTimeout(function() {
+      var li = document.createElement('li');
+      li.className = 'test';
+      li.textContent = 'Pending';
+      document.getElementById('tests').appendChild(li)
+    }, 500);
+  </script>
+</body>
+</html>
