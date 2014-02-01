@@ -47,34 +47,35 @@
 
   var uid = 0;
   function watch(selector){
-    var key = 'SelectorObserver-' + uid++;
+    var key = 'SelectorObserver' + uid++;
 
-    var node = document.createTextNode('@keyframes ' + key + ' { from { clip: rect(1px, auto, auto, auto); } to { clip: rect(0px, auto, auto, auto); } }');
+    var div = document.createElement('div');
+    var styleProps = window.getComputedStyle(div);
+
+    var prefix;
+    if ('animationName' in styleProps) {
+      prefix = '';
+    } else if ('MozAnimationName' in styleProps) {
+      prefix = '-moz-';
+    } else if ('msAnimationName' in styleProps) {
+      prefix = '-ms-';
+    } else if ('webkitAnimationName' in styleProps) {
+      prefix = '-webkit-';
+    } else {
+      return;
+    }
+
+    var keyframe = '@' + prefix + 'keyframes ' + key + ' {\n  from { outline: 1px solid transparent }\n  to { outline: 0px solid transparent }\n}';
+    var node = document.createTextNode(keyframe);
     keyframes.appendChild(node);
-    node = document.createTextNode('@-moz-keyframes ' + key + ' { from { clip: rect(1px, auto, auto, auto); } to { clip: rect(0px, auto, auto, auto); } }');
-    keyframes.appendChild(node);
-    node = document.createTextNode('@-ms-keyframes ' + key + ' { from { clip: rect(1px, auto, auto, auto); } to { clip: rect(0px, auto, auto, auto); } }');
-    keyframes.appendChild(node);
-    node = document.createTextNode('@-o-keyframes ' + key + ' { from { clip: rect(1px, auto, auto, auto); } to { clip: rect(0px, auto, auto, auto); } }');
-    keyframes.appendChild(node);
-    node = document.createTextNode('@-webkit-keyframes ' + key + ' { from { clip: rect(1px, auto, auto, auto); } to { clip: rect(0px, auto, auto, auto); } }');
-    keyframes.appendChild(node);
 
-    var rule = selector + ' { animation-duration: 0.01s; animation-name: ' + key + ' !important; }';
-    styles.sheet.insertRule(rule, 0);
-
-    rule = selector + ' { -ms-animation-duration: 0.01s; -ms-animation-name: ' + key + ' !important; }';
-    styles.sheet.insertRule(rule, 0);
-
-    rule = selector + ' { -moz-animation-duration: 0.01s; -moz-animation-name: ' + key + ' !important; }';
-    styles.sheet.insertRule(rule, 0);
-
-    rule = selector + ' { -o-animation-duration: 0.01s; -o-animation-name: ' + key + ' !important; }';
-    styles.sheet.insertRule(rule, 0);
-
-    rule = selector + ' { -webkit-animation-duration: 0.01s; -webkit-animation-name: ' + key + ' !important; }';
+    var rule = selector + ' {\n  ' + prefix + 'animation-duration: 0.01s;\n  ' + prefix + 'animation-name: ' + key + ';\n}';
     styles.sheet.insertRule(rule, 0);
   }
+
+  // hack for unmatching .checked = false
+  watch(':checked');
+  watch(':not(:checked)');
 
 
   function SelectorObserver(root) {
