@@ -168,4 +168,44 @@
 
     fixture.appendChild(input);
   });
+
+  test('add indeterminate checkbox matching indeterminate selector', function() {
+    expect(2);
+
+    var fixture = this.fixture;
+    var input = document.createElement('input');
+    input.type = 'checkbox';
+    input.indeterminate = true;
+    equal(input.indeterminate, true);
+
+    this.observer.observe('input:indeterminate', function() {
+      ok(this);
+      start();
+    });
+    stop();
+
+    fixture.appendChild(input);
+  });
+
+  test('remove indeterminate checkbox matching indeterminate selector', function() {
+    expect(2);
+
+    var fixture = this.fixture;
+    var input = document.createElement('input');
+    input.type = 'checkbox';
+    input.indeterminate = true;
+    equal(input.indeterminate, true);
+
+    this.observer.observe('input:indeterminate', function() {
+      input.indeterminate = false;
+
+      return function() {
+        ok(this);
+        start();
+      };
+    });
+    stop();
+
+    fixture.appendChild(input);
+  });
 })();
