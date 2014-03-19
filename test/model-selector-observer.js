@@ -37,7 +37,7 @@
 
   SelectorObserver.prototype.disconnect = function() {
     clearInterval(this.scheduleCheckForChangesId);
-    clearInterval(this.checkForChangesId);
+    clearTimeout(this.checkForChangesId);
   };
 
   SelectorObserver.prototype.observe = function(selector, handler) {
