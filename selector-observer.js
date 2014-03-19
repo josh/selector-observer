@@ -87,22 +87,27 @@
     this.observers = [];
     this.selectorSet = new SelectorSet();
     this.handlers = new WeakMap();
+    this.invalidatedElements = [];
 
-    this.scheduleCheckForChanges = bind(this.scheduleCheckForChanges, this);
+    this.invalidateEventTarget = bind(this.invalidateEventTarget, this);
+    this.invalidateMutationRecords = bind(this.invalidateMutationRecords, this);
+    this.invalidateElement = bind(this.invalidateElement, this);
     this.checkForChanges = bind(this.checkForChanges, this);
 
-    this.root.addEventListener('animationstart', this.scheduleCheckForChanges, true);
-    this.root.addEventListener('oAnimationStart', this.scheduleCheckForChanges, true);
-    this.root.addEventListener('MSAnimationStart', this.scheduleCheckForChanges, true);
-    this.root.addEventListener('webkitAnimationStart', this.scheduleCheckForChanges, true);
+    this.root.addEventListener('animationstart', this.invalidateEventTarget, true);
+    this.root.addEventListener('oAnimationStart', this.invalidateEventTarget, true);
+    this.root.addEventListener('MSAnimationStart', this.invalidateEventTarget, true);
+    this.root.addEventListener('webkitAnimationStart', this.invalidateEventTarget, true);
 
     var self = this;
     this.root.addEventListener('DOMNodeInserted', function(event) {
-      event.target.onpropertychange = self.scheduleCheckForChanges;
+      event.target.onpropertychange = function() {
+        self.invalidateElement(event.target);
+      };
     }, true);
 
     if (MutationObserver) {
-      var observer = new MutationObserver(this.checkForChanges);
+      var observer = new MutationObserver(this.invalidateMutationRecords);
       var config = {
         childList: true,
         attributes: true,
@@ -111,14 +116,14 @@
       };
       observer.observe(this.root, config);
     } else {
-      this.root.addEventListener('DOMAttributeNameChanged', this.scheduleCheckForChanges, true);
-      this.root.addEventListener('DOMCharacterDataModified', this.scheduleCheckForChanges, true);
-      this.root.addEventListener('DOMElementNameChanged', this.scheduleCheckForChanges, true);
-      this.root.addEventListener('DOMNodeInserted', this.scheduleCheckForChanges, true);
-      this.root.addEventListener('DOMNodeInsertedIntoDocument', this.scheduleCheckForChanges, true);
-      this.root.addEventListener('DOMNodeRemoved', this.scheduleCheckForChanges, true);
-      this.root.addEventListener('DOMNodeRemovedFromDocument', this.scheduleCheckForChanges, true);
-      this.root.addEventListener('DOMSubtreeModified', this.scheduleCheckForChanges, true);
+      this.root.addEventListener('DOMAttributeNameChanged', this.invalidateEventTarget, true);
+      this.root.addEventListener('DOMCharacterDataModified', this.invalidateEventTarget, true);
+      this.root.addEventListener('DOMElementNameChanged', this.invalidateEventTarget, true);
+      this.root.addEventListener('DOMNodeInserted', this.invalidateEventTarget, true);
+      this.root.addEventListener('DOMNodeInsertedIntoDocument', this.invalidateEventTarget, true);
+      this.root.addEventListener('DOMNodeRemoved', this.invalidateEventTarget, true);
+      this.root.addEventListener('DOMNodeRemovedFromDocument', this.invalidateEventTarget, true);
+      this.root.addEventListener('DOMSubtreeModified', this.invalidateEventTarget, true);
     }
   }
 
@@ -138,7 +143,27 @@
     this.observers.push(observer);
   };
 
-  SelectorObserver.prototype.scheduleCheckForChanges = function() {
+  SelectorObserver.prototype.invalidateEventTarget = function(event) {
+    this.invalidateElement(event.target);
+  };
+
+  SelectorObserver.prototype.invalidateMutationRecords = function(records) {
+    var self = this;
+    records.forEach(function(record) {
+      self.invalidateElement(record.target);
+      var i;
+      for (i = 0; i < record.addedNodes.length; i++) {
+        self.invalidateElement(record.addedNodes[i]);
+      }
+      for (i = 0; i < record.removedNodes.length; i++) {
+        self.invalidateElement(record.removedNodes[i]);
+      }
+    });
+  };
+
+  SelectorObserver.prototype.invalidateElement = function(el) {
+    this.invalidatedElements.push(el);
+
     if (typeof this.checkForChangesId !== 'number') {
       this.checkForChangesId = setTimeout(this.checkForChanges, 0);
     }
