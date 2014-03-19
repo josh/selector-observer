@@ -10,12 +10,12 @@
 
   var WeakMap = window.WeakMap;
   var slice = Array.prototype.slice;
-
-  function bind(fn, self) {
+  var bind = Function.prototype.bind || function(self) {
+    var fn = this;
     return function() {
       return fn.apply(self, arguments);
     };
-  }
+  };
 
   function noop() {
   }
@@ -29,8 +29,8 @@
     this.observers = [];
     this.trackedElements = [];
 
-    this.scheduleCheckForChanges = bind(this.scheduleCheckForChanges, this);
-    this.checkForChanges = bind(this.checkForChanges, this);
+    this.scheduleCheckForChanges = bind.call(this.scheduleCheckForChanges, this);
+    this.checkForChanges = bind.call(this.checkForChanges, this);
 
     this.scheduleCheckForChangesId = setInterval(this.scheduleCheckForChanges, 0);
   }
