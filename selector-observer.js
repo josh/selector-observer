@@ -100,31 +100,20 @@
     this.root.addEventListener('webkitAnimationStart', this.invalidateEventTarget, true);
 
     var self = this;
-    this.root.addEventListener('DOMNodeInserted', function(event) {
+    this.root.addEventListener('DOMSubtreeModified', function(event) {
       event.target.onpropertychange = function() {
         self.invalidateElement(event.target);
       };
     }, true);
 
-    if (MutationObserver) {
-      var observer = new MutationObserver(this.invalidateMutationRecords);
-      var config = {
-        childList: true,
-        attributes: true,
-        characterData: true,
-        subtree: true
-      };
-      observer.observe(this.root, config);
-    } else {
-      this.root.addEventListener('DOMAttributeNameChanged', this.invalidateEventTarget, true);
-      this.root.addEventListener('DOMCharacterDataModified', this.invalidateEventTarget, true);
-      this.root.addEventListener('DOMElementNameChanged', this.invalidateEventTarget, true);
-      this.root.addEventListener('DOMNodeInserted', this.invalidateEventTarget, true);
-      this.root.addEventListener('DOMNodeInsertedIntoDocument', this.invalidateEventTarget, true);
-      this.root.addEventListener('DOMNodeRemoved', this.invalidateEventTarget, true);
-      this.root.addEventListener('DOMNodeRemovedFromDocument', this.invalidateEventTarget, true);
-      this.root.addEventListener('DOMSubtreeModified', this.invalidateEventTarget, true);
-    }
+    var observer = new MutationObserver(this.invalidateMutationRecords);
+    var config = {
+      childList: true,
+      attributes: true,
+      characterData: true,
+      subtree: true
+    };
+    observer.observe(this.root, config);
   }
 
   SelectorObserver.prototype.disconnect = function() {
