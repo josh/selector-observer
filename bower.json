@@ -10,6 +10,7 @@
   ],
   "dependencies": {
     "es6-promise": "~0.1",
+    "MutationObserver": "~0.2",
     "selector-set": "~1.0",
     "WeakMap": "~0.2"
   },
