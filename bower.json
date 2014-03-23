@@ -11,7 +11,7 @@
   "dependencies": {
     "es6-promise": "~0.1",
     "selector-set": "~1.0",
-    "WeakMap": "Polymer/WeakMap"
+    "WeakMap": "~0.2"
   },
   "devDependencies": {
     "qunit": "~1.13.0"
