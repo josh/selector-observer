@@ -136,6 +136,7 @@
       id: uid++,
       selector: selector,
       handler: handler,
+      handlers: new WeakMap(),
       elements: []
     };
     watch(selector);
@@ -185,21 +186,20 @@
       });
     }
 
-    var observer, observerKey, deferred;
+    var observer, deferred;
     var e, el;
 
     var m, matches = this.selectorSet.queryAll(this.root);
     for (m = 0; m < matches.length; m++) {
       var match = matches[m];
       observer = match.data;
-      observerKey = '__selectorObserver' + observer.id;
 
       for (e = 0; e < match.elements.length; e++) {
         el = match.elements[e];
 
-        if (!el[observerKey]) {
+        if (!observer.handlers.get(el)) {
           deferred = new Deferred();
-          el[observerKey] = deferred;
+          observer.handlers.set(el, deferred);
           observer.elements.push(el);
           runHandler(observer.handler, el, deferred);
         }
@@ -209,16 +209,16 @@
     var i;
     for (i = 0; i < this.observers.length; i++) {
       observer = this.observers[i];
-      observerKey = '__selectorObserver' + observer.id;
       matches = slice.call(this.root.querySelectorAll(observer.selector), 0);
 
       for (e = 0; e < observer.elements.length; e++) {
         el = observer.elements[e];
 
         if (matches.indexOf(el) === -1) {
-          if (el[observerKey]) {
-            el[observerKey].resolve();
-            delete el[observerKey];
+          deferred = observer.handlers.get(el);
+          if (deferred) {
+            deferred.resolve();
+            observer.handlers['delete'](el);
           }
         }
       }
