@@ -12,6 +12,21 @@
     };
   };
 
+  function asap(flush) {
+    var iterations = 0;
+    var observer = new MutationObserver(flush);
+    var node = document.createTextNode('');
+    observer.observe(node, {characterData: true});
+    return {
+      flush: function() {
+        node.data = (iterations = ++iterations % 2);
+      },
+      stop: function() {
+        observer.disconnect();
+      }
+    };
+  }
+
   function Deferred() {
     this.resolved = null;
     this.pending = [];
@@ -35,48 +50,154 @@
     }
   };
 
+  var PseudoObserver = (function() {
+    // :link, :visited, :hover, :active
+    // :focus
 
+    var classes = {
+      disabled: {
+        value: function(el) { return el.disabled; },
+        oldValue: new WeakMap()
+      },
+      checked: {
+        value: function(el) { return el.checked; },
+        oldValue: new WeakMap()
+      },
+      indeterminate: {
+        value: function(el) { return el.indeterminate; },
+        oldValue: new WeakMap()
+      }
+    };
 
-  var styles = document.createElement('style');
-  styles.type = 'text/css';
-  document.head.appendChild(styles);
+    var styles = document.createElement('style');
+    styles.type = 'text/css';
+    document.head.appendChild(styles);
 
-  var keyframes = document.createElement('style');
-  keyframes.type = 'text/css';
-  document.head.appendChild(keyframes);
+    var keyframes = document.createElement('style');
+    keyframes.type = 'text/css';
+    document.head.appendChild(keyframes);
 
-  var uid = 0;
-  function watch(selector){
-    var key = 'SelectorObserver' + uid++;
+    var uid = 0;
+    function insertAnimation(selector){
+      var key = 'SelectorObserver' + uid++;
 
-    var div = document.createElement('div');
-    var styleProps = window.getComputedStyle(div);
+      var div = document.createElement('div');
+      var styleProps = window.getComputedStyle(div);
 
-    var prefix;
-    if ('animationName' in styleProps) {
-      prefix = '';
-    } else if ('MozAnimationName' in styleProps) {
-      prefix = '-moz-';
-    } else if ('msAnimationName' in styleProps) {
-      prefix = '-ms-';
-    } else if ('webkitAnimationName' in styleProps) {
-      prefix = '-webkit-';
-    } else {
-      return;
+      var prefix;
+      if ('animationName' in styleProps) {
+        prefix = '';
+      } else if ('MozAnimationName' in styleProps) {
+        prefix = '-moz-';
+      } else if ('msAnimationName' in styleProps) {
+        prefix = '-ms-';
+      } else if ('webkitAnimationName' in styleProps) {
+        prefix = '-webkit-';
+      } else {
+        return;
+      }
+
+      var keyframe = '@' + prefix + 'keyframes ' + key + ' {\n  from { outline: 1px solid transparent }\n  to { outline: 0px solid transparent }\n}';
+      var node = document.createTextNode(keyframe);
+      keyframes.appendChild(node);
+
+      var rule = selector + ' {\n  ' + prefix + 'animation-duration: 0.01s;\n  ' + prefix + 'animation-name: ' + key + ';\n}';
+      styles.sheet.insertRule(rule, 0);
     }
 
-    var keyframe = '@' + prefix + 'keyframes ' + key + ' {\n  from { outline: 1px solid transparent }\n  to { outline: 0px solid transparent }\n}';
-    var node = document.createTextNode(keyframe);
-    keyframes.appendChild(node);
+    insertAnimation('input');
+    insertAnimation('input:disabled');
+    insertAnimation('input:not(:disabled)');
+    insertAnimation('input:checked');
+    insertAnimation('input:not(:checked)');
+    insertAnimation('input:indeterminate');
+    insertAnimation('input:not(:indeterminate)');
 
-    var rule = selector + ' {\n  ' + prefix + 'animation-duration: 0.01s;\n  ' + prefix + 'animation-name: ' + key + ';\n}';
-    styles.sheet.insertRule(rule, 0);
-  }
+    function PseudoObserver(callback) {
+      this.nodes = [];
+      this.records = [];
+      this.onAnimationStart = bind(this.onAnimationStart, this);
 
-  // hack for unmatching .checked = false
-  watch(':checked');
-  watch(':not(:checked)');
+      var self = this;
+      this.asap = asap(function() {
+        callback(self.takeRecords());
+      });
+    }
 
+    PseudoObserver.prototype.observe = function(node) {
+      this.nodes.push(node);
+
+      node.addEventListener('change', this.onAnimationStart, true);
+      node.addEventListener('animationstart', this.onAnimationStart, true);
+      node.addEventListener('oAnimationStart', this.onAnimationStart, true);
+      node.addEventListener('MSAnimationStart', this.onAnimationStart, true);
+      node.addEventListener('webkitAnimationStart', this.onAnimationStart, true);
+
+      var self = this;
+      node.addEventListener('DOMSubtreeModified', function(event) {
+        if (event.target.nodeName === 'INPUT') {
+          self.onChange(event.target);
+          event.target.onpropertychange = function() {
+            self.onChange(event.target);
+          };
+        }
+      }, true);
+    };
+
+    PseudoObserver.prototype.onAnimationStart = function(event) {
+      this.onChange(event.target);
+    };
+
+    PseudoObserver.prototype.onChange = function(target) {
+      var className;
+      for (className in classes) {
+        var oldValue = classes[className].oldValue.get(target);
+        var value = classes[className].value(target);
+
+        if (oldValue !== value) {
+          classes[className].oldValue.set(target, value);
+
+          var record = {
+            type: 'pseudo',
+            className: className,
+            oldValue: oldValue,
+            value: value,
+            target: target
+          };
+          this.records.push(record);
+        }
+      }
+
+      if (this.records.length) {
+        this.asap.flush();
+      }
+    };
+
+    PseudoObserver.prototype.disconnect = function() {
+      var n = this.nodes.length;
+      while (n--) {
+        var node = this.nodes[n];
+        node.removeEventListener('change', this.onAnimationStart, true);
+        node.removeEventListener('animationstart', this.onAnimationStart, true);
+        node.removeEventListener('oAnimationStart', this.onAnimationStart, true);
+        node.removeEventListener('MSAnimationStart', this.onAnimationStart, true);
+        node.removeEventListener('webkitAnimationStart', this.onAnimationStart, true);
+      }
+
+      this.asap.stop();
+    };
+
+    PseudoObserver.prototype.takeRecords = function() {
+      var records = this.records;
+      this.records = [];
+      return records;
+    };
+
+    return PseudoObserver;
+  })();
+
+
+  var uid = 0;
 
   function SelectorObserver(root) {
     if (!root) {
@@ -89,35 +210,28 @@
     this.handlers = new WeakMap();
     this.invalidatedElements = [];
 
-    this.invalidateEventTarget = bind(this.invalidateEventTarget, this);
-    this.invalidateMutationRecords = bind(this.invalidateMutationRecords, this);
-    this.invalidateElement = bind(this.invalidateElement, this);
+    this.invalidateRecords = bind(this.invalidateRecords, this);
     this.checkForChanges = bind(this.checkForChanges, this);
+    this.asap = asap(this.checkForChanges);
 
-    this.root.addEventListener('animationstart', this.invalidateEventTarget, true);
-    this.root.addEventListener('oAnimationStart', this.invalidateEventTarget, true);
-    this.root.addEventListener('MSAnimationStart', this.invalidateEventTarget, true);
-    this.root.addEventListener('webkitAnimationStart', this.invalidateEventTarget, true);
-
-    var self = this;
-    this.root.addEventListener('DOMSubtreeModified', function(event) {
-      event.target.onpropertychange = function() {
-        self.invalidateElement(event.target);
-      };
-    }, true);
-
-    var observer = new MutationObserver(this.invalidateMutationRecords);
+    this.mutationObserver = new MutationObserver(this.invalidateRecords);
     var config = {
       childList: true,
       attributes: true,
       characterData: true,
       subtree: true
     };
-    observer.observe(this.root, config);
+    this.mutationObserver.observe(this.root, config);
+
+    this.psuedoObserver = new PseudoObserver(this.invalidateRecords);
+    this.psuedoObserver.observe(this.root);
   }
 
   SelectorObserver.prototype.disconnect = function() {
     this.stopped = true;
+    this.mutationObserver.disconnect();
+    this.psuedoObserver.disconnect();
+    this.asap.stop();
   };
 
   SelectorObserver.prototype.observe = function(selector, handler) {
@@ -128,35 +242,31 @@
       handlers: new WeakMap(),
       elements: []
     };
-    watch(selector);
     this.selectorSet.add(selector, observer);
     this.observers.push(observer);
   };
 
-  SelectorObserver.prototype.invalidateEventTarget = function(event) {
-    this.invalidateElement(event.target);
-  };
-
-  SelectorObserver.prototype.invalidateMutationRecords = function(records) {
+  SelectorObserver.prototype.invalidateRecords = function(records) {
     var self = this;
+
     records.forEach(function(record) {
       self.invalidateElement(record.target);
-      var i;
-      for (i = 0; i < record.addedNodes.length; i++) {
-        self.invalidateElement(record.addedNodes[i]);
-      }
-      for (i = 0; i < record.removedNodes.length; i++) {
-        self.invalidateElement(record.removedNodes[i]);
+
+      if (record.type === 'childList') {
+        var i;
+        for (i = 0; i < record.addedNodes.length; i++) {
+          self.invalidateElement(record.addedNodes[i]);
+        }
+        for (i = 0; i < record.removedNodes.length; i++) {
+          self.invalidateElement(record.removedNodes[i]);
+        }
       }
     });
   };
 
   SelectorObserver.prototype.invalidateElement = function(el) {
     this.invalidatedElements.push(el);
-
-    if (typeof this.checkForChangesId !== 'number') {
-      this.checkForChangesId = setTimeout(this.checkForChanges, 0);
-    }
+    this.asap.flush();
   };
 
   SelectorObserver.prototype.checkForChanges = function() {
@@ -212,8 +322,6 @@
         }
       }
     }
-
-    this.checkForChangesId = null;
   };
 
 
