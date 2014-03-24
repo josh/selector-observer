@@ -369,9 +369,7 @@
     fixture.appendChild(h2);
   });
 
-  function createFrame(fixture) {
-    var iframe = document.createElement('iframe');
-    fixture.appendChild(iframe);
+  function frameDocument(iframe) {
     var frameDocument = iframe.contentDocument;
     var body = frameDocument.body;
     if (!body) {
@@ -384,7 +382,11 @@
   test('add element to iframe', function() {
     expect(1);
 
-    var doc = createFrame(this.fixture);
+    var fixture = this.fixture;
+    var iframe = document.createElement('iframe');
+    fixture.appendChild(iframe);
+
+    var doc = frameDocument(iframe);
     var observer = new SelectorObserver(doc.body);
 
     var h1 = doc.createElement('h1');
@@ -392,6 +394,7 @@
     observer.observe('H1', function() {
       equal(this, h1);
       observer.disconnect();
+      fixture.removeChild(iframe);
       start();
     });
     stop();
