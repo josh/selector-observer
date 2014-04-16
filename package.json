@@ -20,14 +20,17 @@
     "type": "git",
     "url": "git://github.com/rkusa/selector-observer.git"
   },
+  "main": "./lib",
   "scripts": {
     "test-local": "brtapsauce-local test/index.js",
     "test-sauce": "node test/sauce.js",
-    "test": "browserify test/index.js | testling"
+    "test": "browserify test/index.js | testling",
+    "minify": "cp lib/index.js dist/selector-observer.js && cd dist && uglifyjs --source-map selector-observer.min.map -o selector-observer.min.js selector-observer.js"
   },
   "devDependencies": {
     "tape": "^2.12.3",
-    "brtapsauce": "^0.3.0"
+    "brtapsauce": "^0.3.0",
+    "uglify-js": "^2.4.13"
   },
   "license": "MIT",
   "testling": {
@@ -37,7 +40,8 @@
       "chrome/22..latest",
       "firefox/16..latest",
       "safari/6..latest",
-      "opera/15..latest", "opera/next",
+      "opera/15..latest",
+      "opera/next",
       "iphone/6..latest",
       "android-browser/latest"
     ]
