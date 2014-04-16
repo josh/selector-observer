@@ -1,16 +1,24 @@
 # selector-observer
 
-Observe newly added and removed DOM nodes matching a given selector. This is especially useful for applying specific calls (e.g. Plugin calls) to further added DOM nodes.
+Observe newly added and removed DOM nodes matching a given selector. This is especially useful for applying specific calls, e.g. Plugin calls, to further added DOM nodes.
 
 [![NPM](https://badge.fury.io/js/selector-observer.png)](https://npmjs.org/package/selector-observer)
 
-[![browser support](https://ci.testling.com/rkusa/selector-observer.png)
-](https://ci.testling.com/rkusa/selector-observer)
+<a href="https://saucelabs.com/u/rkusa">
+  <img src="https://saucelabs.com/browser-matrix/rkusa.svg" alt="Selenium Tests Status" />
+</a>
 
 ## API
 
 ```js
   .observeSelector(selector, onAdded, onRemoved)
+```
+
+or
+
+```js
+  var observer = new SelectorObserver(target, selector, onAdded, onRemoved)
+  observer.observe()
 ```
 
 ## Example

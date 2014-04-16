@@ -1,6 +1,6 @@
 {
   "name": "selector-observer",
-  "version": "0.2.2",
+  "version": "1.0.0",
   "author": {
     "name": "Markus Ast",
     "email": "npm.m@rkusa.st"
@@ -21,25 +21,12 @@
     "url": "git://github.com/rkusa/selector-observer.git"
   },
   "scripts": {
-    "test": "browserify test/index.js | testling"
+    "test-local": "brtapsauce-local test/index.js",
+    "test": "node test/sauce.js"
   },
   "devDependencies": {
     "tape": "^2.12.3",
-    "testling": "^1.6.1",
-    "browserify": "^3.43.0"
+    "brtapsauce": "^0.3.0"
   },
-  "license": "MIT",
-  "testling": {
-    "files": "test/index.js",
-    "browsers": [
-      "ie/8..latest",
-      "chrome/22..latest",
-      "firefox/16..latest",
-      "safari/6..latest",
-      "opera/15..latest",
-      "iphone/6..latest",
-      "ipad/6..latest",
-      "android-browser/latest"
-    ]
-  }
+  "license": "MIT"
 }
