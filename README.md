@@ -1,9 +1,9 @@
-# jquery-observe
+# selector-observer
 
-With jquery-observe you have something like `.on` but for Plugin calls. This is useful if you want to apply Plugin calls to further added DOM nodes.
+With selector-observer you have something like `.on` but for Plugin calls. This is useful if you want to apply Plugin calls to further added DOM nodes.
 
 ```json
-{ "name": "jquery-observe",
+{ "name": "selector-observer",
   "version": "0.2.2" }
 ```
 

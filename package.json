@@ -1,20 +1,14 @@
 {
-  "name": "jquery-observe",
+  "name": "selector-observer",
   "author": {
     "name": "Markus Ast",
     "email": "npm.m@rkusa.st"
   },
   "version": "0.2.2",
-  "homepage": "https://github.com/rkusa/jquery-observe",
-  "devDependencies": {
-    "uglify-js": "2.x.x"
-  },
-  "bugs": "https://github.com/rkusa/jquery-observe/issues",
+  "homepage": "https://github.com/rkusa/selector-observer",
+  "bugs": "https://github.com/rkusa/selector-observer/issues",
   "repository" : {
     "type" : "git",
-    "url" : "git://github.com/rkusa/jquery-observe.git"
-  },
-  "scripts": {
-    "minify": "uglifyjs --source-map jquery-observe.min.map -o jquery-observe.min.js jquery-observe.js"
+    "url" : "git://github.com/rkusa/selector-observer.git"
   }
 }
