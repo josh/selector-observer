@@ -10,10 +10,10 @@ const user       = process.env.SAUCE_USER
         , { browserName: 'chrome'            , platform: 'OS X 10.9' , version: ''   }
         , { browserName: 'firefox'           , platform: 'OS X 10.9' , version: ''   }
 
-        , { browserName: 'internet explorer' , platform: 'Windows 8.1' , version: '11' }
-        , { browserName: 'internet explorer' , platform: 'Windows 8' , version: '10' }
-        , { browserName: 'internet explorer' , platform: 'Windows 7' , version: '9'  }
         , { browserName: 'internet explorer' , platform: 'Windows 7' , version: '8'  }
+        , { browserName: 'internet explorer' , platform: 'Windows 7' , version: '9'  }
+        , { browserName: 'internet explorer' , platform: 'Windows 8' , version: '10' }
+        , { browserName: 'internet explorer' , platform: 'Windows 8.1' , version: '11' }
 
         , { browserName: 'iphone'            , platform: 'OS X 10.8' , version: '6.1' }
         , { browserName: 'iphone'            , platform: 'OS X 10.9' , version: '7.1' }

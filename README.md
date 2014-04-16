@@ -4,9 +4,8 @@ Observe newly added and removed DOM nodes matching a given selector. This is esp
 
 [![NPM](https://badge.fury.io/js/selector-observer.png)](https://npmjs.org/package/selector-observer)
 
-<a href="https://saucelabs.com/u/rkusa">
-  <img src="https://saucelabs.com/browser-matrix/rkusa.svg" alt="Selenium Tests Status" />
-</a>
+[![browser support](https://ci.testling.com/rkusa/selector-observer.png)
+](https://ci.testling.com/rkusa/selector-observer)
 
 ## API
 
@@ -31,9 +30,10 @@ document.getElementById('some-id').observeSelector('div.draggable', function() {
 
 ## jQuery / Zepto.js
 
-I have removed the jQuery / Zepto.js dependency in `1.0.0`. However, `selector-observer` is still compatible to both frameworks, an can be used directly by adding something like:
+I have removed the jQuery / Zepto.js dependency in `1.0.0`. However, `selector-observer` is still compatible to both frameworks; a `.observe()` method can be added as follows:
 
 ```js
+// usage $(targetSelector).observe(selector, onAdded, onRemoved)
 $.fn.observe = function(selector, onAdded, onRemoved) {
   this[0].observeSelector(selector, onAdded, onRemoved)
   return this
@@ -41,7 +41,7 @@ $.fn.observe = function(selector, onAdded, onRemoved) {
 ```
 
 ## MIT License
-Copyright (c) 2013 Markus Ast
+Copyright (c) 2013-2014 Markus Ast
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

@@ -22,11 +22,24 @@
   },
   "scripts": {
     "test-local": "brtapsauce-local test/index.js",
-    "test": "node test/sauce.js"
+    "test-sauce": "node test/sauce.js",
+    "test": "browserify test/index.js | testling"
   },
   "devDependencies": {
     "tape": "^2.12.3",
     "brtapsauce": "^0.3.0"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "testling": {
+    "files": "test/index.js",
+    "browsers": [
+      "ie/8..latest",
+      "chrome/22..latest",
+      "firefox/16..latest",
+      "safari/6..latest",
+      "opera/15..latest", "opera/next",
+      "iphone/6..latest",
+      "android-browser/latest"
+    ]
+  }
 }
