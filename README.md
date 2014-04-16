@@ -1,27 +1,36 @@
 # selector-observer
 
-With selector-observer you have something like `.on` but for Plugin calls. This is useful if you want to apply Plugin calls to further added DOM nodes.
+Observe newly added and removed DOM nodes matching a given selector. This is especially useful for applying specific calls (e.g. Plugin calls) to further added DOM nodes.
 
-```json
-{ "name": "selector-observer",
-  "version": "0.2.2" }
-```
+[![NPM](https://badge.fury.io/js/selector-observer.png)](https://npmjs.org/package/selector-observer)
+
+[![browser support](https://ci.testling.com/rkusa/selector-observer.png)
+](https://ci.testling.com/rkusa/selector-observer)
 
 ## API
 
-    .observe(selector, onAdded, onRemoved)
+```js
+  .observeSelector(selector, onAdded, onRemoved)
+```
 
 ## Example
 
 ```js
-$('#some-id').observe('div.draggable', function() {
-  $(this).draggable()
+document.getElementById('some-id').observeSelector('div.draggable', function() {
+  new Draggable(this)
 })
 ```
 
-## Zepto.js
+## jQuery / Zepto.js
 
-Works with [Zepto.js](zeptojs.com), too, if you include Zepto's `data` module.
+I have removed the jQuery / Zepto.js dependency in `1.0.0`. However, `selector-observer` is still compatible to both frameworks, an can be used directly by adding something like:
+
+```js
+$.fn.observe = function(selector, onAdded, onRemoved) {
+  this[0].observeSelector(selector, onAdded, onRemoved)
+  return this
+}
+```
 
 ## MIT License
 Copyright (c) 2013 Markus Ast

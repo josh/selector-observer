@@ -1,14 +1,45 @@
 {
   "name": "selector-observer",
+  "version": "0.2.2",
   "author": {
     "name": "Markus Ast",
     "email": "npm.m@rkusa.st"
   },
-  "version": "0.2.2",
+  "description": "Observe newly added and removed DOM nodes matching a given selector",
+  "keywords": [
+    "observe",
+    "observer",
+    "MutationObserver",
+    "DOM",
+    "mutations",
+    "selector"
+  ],
   "homepage": "https://github.com/rkusa/selector-observer",
   "bugs": "https://github.com/rkusa/selector-observer/issues",
-  "repository" : {
-    "type" : "git",
-    "url" : "git://github.com/rkusa/selector-observer.git"
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/rkusa/selector-observer.git"
+  },
+  "scripts": {
+    "test": "browserify test/index.js | testling"
+  },
+  "devDependencies": {
+    "tape": "^2.12.3",
+    "testling": "^1.6.1",
+    "browserify": "^3.43.0"
+  },
+  "license": "MIT",
+  "testling": {
+    "files": "test/index.js",
+    "browsers": [
+      "ie/8..latest",
+      "chrome/22..latest",
+      "firefox/16..latest",
+      "safari/6..latest",
+      "opera/15..latest",
+      "iphone/6..latest",
+      "ipad/6..latest",
+      "android-browser/latest"
+    ]
   }
 }
