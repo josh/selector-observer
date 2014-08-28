@@ -2,9 +2,9 @@
 
 Observe newly added and removed DOM nodes matching a given selector. This is especially useful for applying specific calls, e.g. Plugin calls, to further added DOM nodes.
 
-[![NPM](https://badge.fury.io/js/selector-observer.png)](https://npmjs.org/package/selector-observer)
+[![NPM][npm]](https://npmjs.org/package/selector-observer)
 
-[![browser support](https://ci.testling.com/rkusa/selector-observer.png)
+[![Browser Support](https://ci.testling.com/rkusa/selector-observer.png)
 ](https://ci.testling.com/rkusa/selector-observer)
 
 ## API
@@ -48,3 +48,5 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+[npm]: http://img.shields.io/npm/v/selector-observer.svg?style=flat-square
