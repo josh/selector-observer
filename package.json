@@ -1,6 +1,6 @@
 {
   "name": "selector-observer",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": {
     "name": "Markus Ast",
     "email": "npm.m@rkusa.st"
@@ -25,6 +25,7 @@
     "test-local": "brtapsauce-local test/index.js",
     "test-sauce": "node test/sauce.js",
     "test": "browserify test/index.js | testling",
+    "prepublish": "npm run-script minify",
     "minify": "cp lib/index.js dist/selector-observer.js && cd dist && uglifyjs --source-map selector-observer.min.map -o selector-observer.min.js selector-observer.js"
   },
   "devDependencies": {

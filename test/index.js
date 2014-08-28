@@ -1,5 +1,5 @@
 var test = require('tape')
-  , SelectorObserver = require('../lib/selector-observer')
+var SelectorObserver = require('../lib')
 
 // build initial DOM
 function createEntry(content) {
