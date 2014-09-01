@@ -147,3 +147,17 @@ test('DOM extension', function(t) {
 
   document.body.removeChild(ul)
 })
+
+test('unique elements', function(t) {
+  t.plan(1)
+
+  var div = document.createElement('div')
+
+  document.body.observeSelector('.target', function() {
+    t.equal(this.getAttribute('class'), 'target')
+  })
+
+  document.body.appendChild(div)
+
+  div.innerHTML = '<div class="target"></div>'
+})
