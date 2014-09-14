@@ -10,14 +10,20 @@ Observe newly added and removed DOM nodes matching a given selector. This is esp
 ## API
 
 ```js
-  .observeSelector(selector, onAdded, onRemoved)
+  element.observeSelector(selector, onAdded, onRemoved);
 ```
 
 or
 
 ```js
-  var observer = new SelectorObserver(target, selector, onAdded, onRemoved)
-  observer.observe()
+  // If you use browserify, require selector-observer:
+  // var SelectorObserver = require('selector-observer');
+  
+  var observer = new SelectorObserver(target, selector, onAdded, onRemoved);
+  observer.observe();
+  
+  //stop observing
+  observer.disconnect();
 ```
 
 ## Example
