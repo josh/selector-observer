@@ -5,19 +5,26 @@ const user       = process.env.SAUCE_USER
 
       // list of browsers & versions that you want to test
     , capabilities = [
-          { browserName: 'safari'            , platform: 'OS X 10.8' , version: '6'  }
-        , { browserName: 'safari'            , platform: 'OS X 10.9' , version: '7'  }
-        , { browserName: 'chrome'            , platform: 'OS X 10.9' , version: ''   }
-        , { browserName: 'firefox'           , platform: 'OS X 10.9' , version: ''   }
+          { browserName: 'safari',            platform: 'OS X 10.8',   version: '6'  }
+        , { browserName: 'safari',            platform: 'OS X 10.9',   version: '7'  }
+        , { browserName: 'safari',            platform: 'OS X 10.10',  version: '8'  }
+        , { browserName: 'chrome',            platform: 'OS X 10.10',  version: ''   }
+        , { browserName: 'firefox',           platform: 'OS X 10.10',  version: ''   }
 
-        , { browserName: 'internet explorer' , platform: 'Windows 7' , version: '8'  }
-        , { browserName: 'internet explorer' , platform: 'Windows 7' , version: '9'  }
-        , { browserName: 'internet explorer' , platform: 'Windows 8' , version: '10' }
-        , { browserName: 'internet explorer' , platform: 'Windows 8.1' , version: '11' }
+        , { browserName: 'internet explorer', platform: 'Windows 7',   version: '9'  }
+        , { browserName: 'internet explorer', platform: 'Windows 8',   version: '10' }
+        , { browserName: 'internet explorer', platform: 'Windows 8.1', version: '11' }
 
-        , { browserName: 'iphone'            , platform: 'OS X 10.8' , version: '6.1' }
-        , { browserName: 'iphone'            , platform: 'OS X 10.9' , version: '7.1' }
-        , { browserName: 'android'           , platform: 'Linux'     , version: '4.3' }
+        // The following tests are failing with sauce labs related errors
+
+        // , { browserName: 'internet explorer', platform: 'Windows 7',  version: '8'  }
+
+        // , { browserName: 'iphone',            platform: 'OS X 10.10',  version: '7.1' }
+        // , { browserName: 'iphone',            platform: 'OS X 10.10',  version: '8.1' }
+
+        // , { browserName: 'android',           platform: 'Linux',       version: '4.3' }
+        // , { browserName: 'android',           platform: 'Linux',       version: '4.4' }
+        // , { browserName: 'android',           platform: 'Linux',       version: '5.0' }
       ]
 
 if (!user)

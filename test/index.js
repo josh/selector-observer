@@ -161,3 +161,24 @@ test('unique elements', function(t) {
 
   div.innerHTML = '<div class="target"></div>'
 })
+
+test('ignore moved elements', function(t) {
+  t.plan(1)
+
+  var ul = prepare()
+  var toBeMoved = createEntry('toBeMoved')
+  ul.appendChild(toBeMoved)
+  var toBeRemoved = createEntry('toBeRemoved')
+  ul.appendChild(toBeRemoved)
+  document.body.appendChild(ul)
+
+  var observer = new SelectorObserver(ul, 'a', function() {
+  }, function() {
+    t.equal(this.innerHTML, 'toBeRemoved')
+  })
+
+  observer.observe()
+
+  ul.removeChild(toBeRemoved)
+  ul.insertBefore(toBeMoved, ul.firstChild)
+})

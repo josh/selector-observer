@@ -1,6 +1,6 @@
 {
   "name": "selector-observer",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "author": {
     "name": "Markus Ast",
     "email": "npm.m@rkusa.st"
@@ -26,11 +26,13 @@
     "test-sauce": "node test/sauce.js",
     "test": "browserify test/index.js | testling",
     "prepublish": "npm run-script minify",
-    "minify": "cp lib/index.js dist/selector-observer.js && cd dist && uglifyjs --source-map selector-observer.min.map -o selector-observer.min.js selector-observer.js"
+    "minify": "cp lib/index.js dist/selector-observer.js && uglifyjs --source-map dist/selector-observer.min.js.map --source-map-url selector-observer.min.js.map -o dist/selector-observer.min.js dist/selector-observer.js"
   },
   "devDependencies": {
-    "tape": "^2.12.3",
+    "browserify": "^8.1.3",
     "brtapsauce": "^0.3.0",
+    "tape": "^3.5.0",
+    "testling": "^1.7.1",
     "uglify-js": "^2.4.13"
   },
   "license": "MIT",
