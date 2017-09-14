@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/josh/selector-observer/issues"
   },
-  "homepage": "https://github.com/josh/selector-observer#readme"
+  "homepage": "https://github.com/josh/selector-observer#readme",
+  "dependencies": {
+    "selector-set": "^1.1"
+  }
 }
