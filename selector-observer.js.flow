@@ -1,0 +1,59 @@
+/* @flow */
+
+// Valid function type for observer add() callback.
+//
+//   add(el) { console.log(el, 'was added to the document') }
+//
+type AddCallback<T: Element> = (el: T) => void
+
+// Valid function type for observer remove() callback.
+//
+//   remove(el) { console.log(el, 'was removed from the document') }
+//
+type RemoveCallback<T: Element> = (el: T) => void
+
+// Valid function type for observer initialize() callback.
+//
+//   initialize(el) { console.log(el, 'was added to the document for the first time') }
+//
+// Callbacks may also be dynamicially defined in an initializer callback to create
+// a closure around shared state.
+//
+//   initialize(el) {
+//     let counter = 0
+//     return {
+//       add() { counter++ },
+//       remove() { counter-- }
+//     }
+//   }
+//
+type InitializerCallback<T: Element> = (el: T) => void | InitializerCallbacks<T>
+
+type InitializerCallbacks<T: Element> = {|
+  add?: AddCallback<T>,
+  remove?: RemoveCallback<T>
+|}
+
+type Observer<T: Element> = {|
+  id: number,
+  selector: string,
+  initialize: ?InitializerCallback<T>,
+  add: ?AddCallback<T>,
+  remove: ?RemoveCallback<T>,
+  elements: Array<T>,
+  klass: Class<T>,
+  stop: () => void
+|}
+
+type HandlersObject<T: Element> = {|
+  initialize?: InitializerCallback<T>,
+  add?: AddCallback<T>,
+  remove?: RemoveCallback<T>
+|}
+
+type Change = [string, Element, ?Observer<*>]
+type Changes = Array<Change>
+
+declare module.exports: {
+  observe<T: Element>(selector: string, handlersInit: HandlersObject<T> | Function, klassOptional: ?Class<T>): Observer<T>;
+}

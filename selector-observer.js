@@ -1,5 +1,3 @@
-/* @flow */
-
 // observe
 //
 // Observe provides a declarative hook thats informed when an element becomes
@@ -18,57 +16,6 @@
 //
 
 import SelectorSet from 'selector-set'
-
-// Valid function type for observer add() callback.
-//
-//   add(el) { console.log(el, 'was added to the document') }
-//
-type AddCallback<T: Element> = (el: T) => void
-
-// Valid function type for observer remove() callback.
-//
-//   remove(el) { console.log(el, 'was removed from the document') }
-//
-type RemoveCallback<T: Element> = (el: T) => void
-
-// Valid function type for observer initialize() callback.
-//
-//   initialize(el) { console.log(el, 'was added to the document for the first time') }
-//
-// Callbacks may also be dynamicially defined in an initializer callback to create
-// a closure around shared state.
-//
-//   initialize(el) {
-//     let counter = 0
-//     return {
-//       add() { counter++ },
-//       remove() { counter-- }
-//     }
-//   }
-//
-type InitializerCallback<T: Element> = (el: T) => void | InitializerCallbacks<T>
-
-type InitializerCallbacks<T: Element> = {|
-  add?: AddCallback<T>,
-  remove?: RemoveCallback<T>
-|}
-
-type Observer<T: Element> = {|
-  id: number,
-  selector: string,
-  initialize: ?InitializerCallback<T>,
-  add: ?AddCallback<T>,
-  remove: ?RemoveCallback<T>,
-  elements: Array<T>,
-  klass: Class<T>,
-  stop: () => void
-|}
-
-type HandlersObject<T: Element> = {|
-  initialize?: InitializerCallback<T>,
-  add?: AddCallback<T>,
-  remove?: RemoveCallback<T>
-|}
 
 // Known issues
 //
@@ -110,10 +57,10 @@ const scheduleMacroTask = (function() {
 let uid = 0
 
 // Map of observer id to object
-const documentObservers: Array<Observer<any>> = []
+const documentObservers = []
 
 // Index of selectors to observer objects
-const selectorSet: SelectorSet<Observer<any>> = new SelectorSet()
+const selectorSet = new SelectorSet()
 const initMap = new WeakMap()
 const addMap = new WeakMap()
 const initializerMap = new WeakMap()
@@ -125,7 +72,7 @@ const initializerMap = new WeakMap()
 // observer - An observer Object.
 //
 // Returns nothing.
-function runInit<T: Element>(el: T, observer: Observer<T>) {
+function runInit(el, observer) {
   let initIds = initMap.get(el)
   if (!initIds) {
     initIds = []
@@ -156,7 +103,7 @@ function runInit<T: Element>(el: T, observer: Observer<T>) {
 // observer - An observer Object.
 //
 // Returns nothing.
-function runAdd<T: Element>(el: T, observer: Observer<T>) {
+function runAdd(el, observer) {
   let addIds = addMap.get(el)
   if (!addIds) {
     addIds = []
@@ -185,7 +132,7 @@ function runAdd<T: Element>(el: T, observer: Observer<T>) {
 // observer - Optional observer to check
 //
 // Returns nothing.
-function runRemove<T: Element>(el: T, observer: ?Observer<T>) {
+function runRemove(el, observer) {
   const addIds = addMap.get(el)
   if (!addIds) {
     return
@@ -238,9 +185,6 @@ function runRemove<T: Element>(el: T, observer: ?Observer<T>) {
   }
 }
 
-type Change = [string, Element, ?Observer<*>]
-type Changes = Array<Change>
-
 // Run observer node "add" callback once on the any matching
 // node and its subtree.
 //
@@ -248,7 +192,7 @@ type Changes = Array<Change>
 // nodes   - A NodeList of Nodes
 //
 // Returns Array of changes
-function addNodes(changes: Changes, nodes: NodeList<Node>) {
+function addNodes(changes, nodes) {
   for (const el of nodes) {
     if (!(el instanceof Element)) {
       continue
@@ -273,7 +217,7 @@ function addNodes(changes: Changes, nodes: NodeList<Node>) {
 // nodes   - A NodeList of Nodes
 //
 // Returns Array of changes
-function removeNodes(changes: Changes, nodes: NodeList<Node>) {
+function removeNodes(changes, nodes) {
   for (const el of nodes) {
     if (!(el instanceof Element)) {
       continue
@@ -292,7 +236,7 @@ function removeNodes(changes: Changes, nodes: NodeList<Node>) {
 // changes - Array of changes to append to
 //
 // Returns nothing.
-function revalidateOrphanedElements(changes: Changes) {
+function revalidateOrphanedElements(changes) {
   for (const observer of documentObservers) {
     if (observer) {
       for (const el of observer.elements) {
@@ -311,7 +255,7 @@ function revalidateOrphanedElements(changes: Changes) {
 // node    - A Node
 //
 // Returns nothing.
-function revalidateObservers(changes: Changes, node: Node) {
+function revalidateObservers(changes, node) {
   if (!(node instanceof Element)) {
     return
   }
@@ -367,7 +311,7 @@ function applyChanges(changes) {
 // observer - Observer object
 //
 // Returns nothing.
-function stopObserving<T: Element>(observer: Observer<T>) {
+function stopObserving(observer) {
   for (const el of observer.elements) {
     runRemove(el, observer)
   }
@@ -385,10 +329,10 @@ function stopObserving<T: Element>(observer: Observer<T>) {
 //   remove     - Function to invoke when Node no longer matches selector
 //
 // Returns Observer object.
-export function observe<T: Element>(selector: string, handlersInit: HandlersObject<T> | Function, klassOptional: ?Class<T>): Observer<T> {
+export function observe(selector, handlersInit, klassOptional) {
   const klass = klassOptional ? klassOptional : Element
-  const handlers: HandlersObject<T> = typeof handlersInit === 'function' ? {initialize: handlersInit} : handlersInit
-  const observer: any = {
+  const handlers = typeof handlersInit === 'function' ? {initialize: handlersInit} : handlersInit
+  const observer = {
     id: uid++,
     selector,
     initialize: handlers.initialize,
@@ -417,8 +361,8 @@ function scheduleAddDocumentNodes() {
 }
 
 function addDocumentNodes() {
-  const changes: Changes = []
-  const nodes: any = [document.documentElement]
+  const changes = []
+  const nodes = [document.documentElement]
   addNodes(changes, nodes)
   applyChanges(changes)
   addDocumentNodesScheduled = false
@@ -432,16 +376,16 @@ export function getObserverCount() {
 }
 
 // Internal: For hacking in dirty changes that aren't getting picked up
-export function triggerObservers(container: Element) {
-  const changes: Changes = []
+export function triggerObservers(container) {
+  const changes = []
   revalidateDescendantObservers(changes, container)
   applyChanges(changes)
 }
 
-let changedTargets: Array<any> = []
+let changedTargets = []
 
 function handleAsyncChangeEvents() {
-  const changes: Changes = []
+  const changes = []
   const targets = changedTargets
   changedTargets = []
   for (const target of targets) {
@@ -465,7 +409,7 @@ function handleChangeEvent(event) {
 document.addEventListener('change', handleChangeEvent, false)
 
 function handleDocumentMutations(mutations) {
-  const changes: Changes = []
+  const changes = []
   for (const mutation of mutations) {
     if (mutation.type === 'childList') {
       addNodes(changes, mutation.addedNodes)
@@ -497,8 +441,8 @@ whenReady(() => {
       attributes: true,
       subtree: true
     })
-    const changes: Changes = []
-    const nodes: any = [document.documentElement]
+    const changes = []
+    const nodes = [document.documentElement]
     addNodes(changes, nodes)
     applyChanges(changes)
   })
