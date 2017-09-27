@@ -1,8 +1,4 @@
 {
-  "parser": "babel-eslint",
-  "parserOptions": {
-    "sourceType": "module"
-  },
   "extends": [
     "plugin:github/recommended",
     "plugin:github/browser",
