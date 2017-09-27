@@ -1,3 +1,5 @@
+/* @flow */
+
 export default {
   input: 'selector-observer.js',
   name: 'SelectorObserver',
