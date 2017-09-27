@@ -5,7 +5,7 @@
   "main": "dist/index.umd.js",
   "module": "dist/index.esm.js",
   "scripts": {
-    "test": "flow check",
+    "test": "eslint . && flow check",
     "build-umd": "rollup -c rollup.config.umd.js",
     "build-esm": "rollup -c rollup.config.esm.js",
     "build": "npm run build-umd && npm run build-esm"
@@ -24,6 +24,9 @@
     "selector-set": "^1.1"
   },
   "devDependencies": {
+    "eslint": "^4.7.2",
+    "eslint-plugin-github": "^0.14.1",
+    "eslint-plugin-import": "^2.7.0",
     "flow-bin": "^0.54.1",
     "rollup": "^0.49.3"
   }

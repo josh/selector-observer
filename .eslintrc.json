@@ -1,0 +1,10 @@
+{
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "extends": [
+    "plugin:github/recommended",
+    "plugin:github/browser",
+    "plugin:github/es6"
+  ]
+}

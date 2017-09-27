@@ -10,4 +10,4 @@ export default {
   },
   external: 'selector-set',
   plugins: []
-};
+}
