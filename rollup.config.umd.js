@@ -1,3 +1,5 @@
+import babel from 'rollup-plugin-babel'
+
 export default {
   input: 'selector-observer.js',
   name: 'SelectorObserver',
@@ -9,5 +11,5 @@ export default {
     }
   },
   external: 'selector-set',
-  plugins: []
+  plugins: [babel()]
 }
