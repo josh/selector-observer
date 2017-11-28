@@ -1,5 +1,27 @@
 /* @flow */
 
+declare module.exports: {
+  // Public: Install document observer.
+  //
+  //   observe('.foo', {
+  //     add(el) { console.log(el, 'was added to the document') }
+  //     remove(el) { console.log(el, 'was removed from the document') }
+  //   })
+  //
+  observe<T: Element>(
+    selector: string,
+    handlersInit: HandlersObject<T> | Function,
+    klassOptional: ?Class<T>
+  ): Observer<T>
+}
+
+// Valid observe handlers.
+type HandlersObject<T: Element> = {|
+  initialize?: InitializerCallback<T>,
+  add?: AddCallback<T>,
+  remove?: RemoveCallback<T>
+|}
+
 // Valid function type for observer add() callback.
 //
 //   add(el) { console.log(el, 'was added to the document') }
@@ -16,6 +38,8 @@ type RemoveCallback<T: Element> = (el: T) => void
 //
 //   initialize(el) { console.log(el, 'was added to the document for the first time') }
 //
+type InitializerCallback<T: Element> = (el: T) => void | InitializerCallbacks<T>
+
 // Callbacks may also be dynamicially defined in an initializer callback to create
 // a closure around shared state.
 //
@@ -27,37 +51,15 @@ type RemoveCallback<T: Element> = (el: T) => void
 //     }
 //   }
 //
-type InitializerCallback<T: Element> = (el: T) => void | InitializerCallbacks<T>
-
 type InitializerCallbacks<T: Element> = {|
   add?: AddCallback<T>,
   remove?: RemoveCallback<T>
 |}
 
+// After installing an observer, an object is returned with a `stop()` function
+// to clean up the observer.
 type Observer<T: Element> = {|
-  id: number,
-  selector: string,
-  initialize: ?InitializerCallback<T>,
-  add: ?AddCallback<T>,
-  remove: ?RemoveCallback<T>,
-  elements: Array<T>,
-  klass: Class<T>,
+  // const observer = observe('.foo', {})
+  // observer.stop()
   stop: () => void
 |}
-
-type HandlersObject<T: Element> = {|
-  initialize?: InitializerCallback<T>,
-  add?: AddCallback<T>,
-  remove?: RemoveCallback<T>
-|}
-
-type Change = [string, Element, ?Observer<*>]
-type Changes = Array<Change>
-
-declare module.exports: {
-  observe<T: Element>(
-    selector: string,
-    handlersInit: HandlersObject<T> | Function,
-    klassOptional: ?Class<T>
-  ): Observer<T>
-}
