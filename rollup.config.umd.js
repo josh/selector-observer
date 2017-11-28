@@ -1,7 +1,7 @@
 import babel from 'rollup-plugin-babel'
 
 export default {
-  input: 'selector-observer.js',
+  input: 'lib/selector-observer.js',
   name: 'SelectorObserver',
   output: {
     file: 'dist/index.umd.js',

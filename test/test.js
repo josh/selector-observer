@@ -1,7 +1,7 @@
 /* @flow */
 
 import {assert, test, invariant, timeout} from './utils'
-import {observe} from '../selector-observer'
+import {observe} from '../lib/selector-observer'
 
 const body = document.body
 invariant(body)
