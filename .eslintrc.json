@@ -1,9 +1,7 @@
 {
+  "parser": "babel-eslint",
   "env": {
     "node": true
-  },
-  "rules": {
-    "github/no-then": "off"
   },
   "extends": ["plugin:github/es6", "plugin:github/browser"]
 }
