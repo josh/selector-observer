@@ -296,7 +296,10 @@ function revalidateDescendantObservers(changes, node) {
 }
 
 function applyChanges(changes) {
-  for (const [type, el, observer] of changes) {
+  for (const change of changes) {
+    const type = change[0]
+    const el = change[1]
+    const observer = change[2]
     if (type === 'add' && observer && el instanceof observer.klass) {
       runInit(el, observer)
       runAdd(el, observer)
