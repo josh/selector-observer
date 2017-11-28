@@ -2,8 +2,5 @@
   "env": {
     "node": true
   },
-  "extends": [
-    "plugin:github/es6",
-    "plugin:github/browser"
-  ]
+  "extends": ["plugin:github/es6", "plugin:github/browser"]
 }

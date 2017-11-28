@@ -55,5 +55,9 @@ type Change = [string, Element, ?Observer<*>]
 type Changes = Array<Change>
 
 declare module.exports: {
-  observe<T: Element>(selector: string, handlersInit: HandlersObject<T> | Function, klassOptional: ?Class<T>): Observer<T>;
+  observe<T: Element>(
+    selector: string,
+    handlersInit: HandlersObject<T> | Function,
+    klassOptional: ?Class<T>
+  ): Observer<T>
 }
