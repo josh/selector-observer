@@ -25,6 +25,7 @@
     "url": "https://github.com/josh/selector-observer/issues"
   },
   "homepage": "https://github.com/josh/selector-observer#readme",
+  "files": ["dist/*.js.flow", "dist/*.js"],
   "dependencies": {
     "selector-set": "^1.1"
   },
