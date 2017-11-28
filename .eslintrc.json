@@ -1,7 +1,9 @@
 {
+  "env": {
+    "node": true
+  },
   "extends": [
-    "plugin:github/recommended",
-    "plugin:github/browser",
-    "plugin:github/es6"
+    "plugin:github/es6",
+    "plugin:github/browser"
   ]
 }

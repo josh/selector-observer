@@ -49,7 +49,7 @@ const scheduleMacroTask = (function() {
 
   return function(callback) {
     queue.push(callback)
-    el.setAttribute('data-foo', '' + Date.now())
+    el.setAttribute('data-foo', `${Date.now()}`)
   }
 })()
 
@@ -90,7 +90,7 @@ function runInit(el, observer) {
         initializers = {}
         initializerMap.set(el, initializers)
       }
-      initializers[''+observer.id] = initializer
+      initializers[`${observer.id}`] = initializer
     }
     initIds.push(observer.id)
   }
@@ -112,7 +112,7 @@ function runAdd(el, observer) {
   if (addIds.indexOf(observer.id) === -1) {
     observer.elements.push(el)
     const initializers = initializerMap.get(el)
-    const initializer = initializers ? initializers[''+observer.id] : null
+    const initializer = initializers ? initializers[`${observer.id}`] : null
     if (initializer) {
       if (initializer.add) {
         initializer.add.call(undefined, el)
@@ -146,7 +146,7 @@ function runRemove(el, observer) {
     index = addIds.indexOf(observer.id)
     if (index !== -1) {
       const initializers = initializerMap.get(el)
-      const initializer = initializers ? initializers[''+observer.id] : null
+      const initializer = initializers ? initializers[`${observer.id}`] : null
       if (initializer) {
         if (initializer.remove) {
           initializer.remove.call(undefined, el)
@@ -171,7 +171,7 @@ function runRemove(el, observer) {
         observer.elements.splice(index, 1)
       }
       const initializers = initializerMap.get(el)
-      const initializer = initializers ? initializers[''+observer.id] : null
+      const initializer = initializers ? initializers[`${observer.id}`] : null
       if (initializer) {
         if (initializer.remove) {
           initializer.remove.call(undefined, el)
