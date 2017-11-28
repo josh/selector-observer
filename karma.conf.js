@@ -7,7 +7,7 @@ module.exports = function(config) {
         ui: 'tdd'
       }
     },
-    files: ['dist/index.test.js'],
+    files: ['node_modules/babel-polyfill/browser.js', 'dist/index.test.js'],
     reporters: ['progress'],
     port: 9876,
     colors: true,

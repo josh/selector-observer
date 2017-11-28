@@ -8,13 +8,5 @@ export default {
     file: 'dist/index.test.js',
     format: 'iife'
   },
-  plugins: [
-    babel(),
-    nodeResolve(),
-    commonjs({
-      namedExports: {
-        './node_modules/chai/index.js': ['assert']
-      }
-    })
-  ]
+  plugins: [babel(), nodeResolve(), commonjs()]
 }
