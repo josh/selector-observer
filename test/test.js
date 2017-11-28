@@ -1,14 +1,16 @@
 /* eslint-env mocha */
-import {assert} from 'chai'
 import {observe} from '../selector-observer'
 
-test('simple', function(done) {
-  let addedRan = false
+/* global chai */
+const {assert} = chai
+
+test('simple', done => {
+  let addRan = false
   let removeRan = false
 
   const observer = observe('.foo', {
     add() {
-      addedRan = true
+      addRan = true
     },
     remove() {
       removeRan = true
@@ -22,8 +24,8 @@ test('simple', function(done) {
   document.body.removeChild(foo)
 
   setTimeout(() => {
-    assert.equal(addedRan, true)
-    assert.equal(removeRan, true)
+    assert.equal(addRan, true, 'add ran')
+    assert.equal(removeRan, true, 'remove ran')
     observer.stop()
     done()
   }, 10)

@@ -1,7 +1,7 @@
 /* eslint-env commonjs */
 module.exports = function(config) {
   config.set({
-    frameworks: ['mocha'],
+    frameworks: ['mocha', 'chai'],
     client: {
       mocha: {
         ui: 'tdd'
