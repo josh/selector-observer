@@ -1,10 +1,12 @@
-/* eslint-env mocha */
+/* @flow */
+
+import {assert, test, invariant, timeout} from './utils'
 import {observe} from '../selector-observer'
 
-/* global chai */
-const {assert} = chai
+const body = document.body
+invariant(body)
 
-test('simple', done => {
+test('simple', () => {
   let addRan = false
   let removeRan = false
 
@@ -20,13 +22,12 @@ test('simple', done => {
   const foo = document.createElement('div')
   foo.className = 'foo'
 
-  document.body.appendChild(foo)
-  document.body.removeChild(foo)
+  body.appendChild(foo)
+  body.removeChild(foo)
 
-  setTimeout(() => {
+  return timeout(10).then(() => {
+    observer.stop()
     assert.equal(addRan, true, 'add ran')
     assert.equal(removeRan, true, 'remove ran')
-    observer.stop()
-    done()
-  }, 10)
+  })
 })
