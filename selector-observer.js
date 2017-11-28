@@ -39,8 +39,8 @@ const scheduleMacroTask = (function() {
   function handleMutations() {
     const callbacks = queue
     queue = []
-    for (const callback of callbacks) {
-      callback()
+    for (let i = 0; i < callbacks.length; i++) {
+      callbacks[i]()
     }
   }
 
@@ -161,8 +161,9 @@ function runRemove(el, observer) {
       addMap.delete(el)
     }
   } else {
-    for (const id of addIds.slice(0)) {
-      observer = documentObservers[id]
+    const ids = addIds.slice(0)
+    for (let i = 0; i < ids.length; i++) {
+      observer = documentObservers[ids[i]]
       if (!observer) {
         continue
       }
@@ -193,18 +194,23 @@ function runRemove(el, observer) {
 //
 // Returns Array of changes
 function addNodes(changes, nodes) {
-  for (const el of nodes) {
+  for (let i = 0; i < nodes.length; i++) {
+    const el = nodes[i]
     if (!(el instanceof Element)) {
       continue
     }
 
-    for (const {data} of selectorSet.matches(el)) {
+    const matches = selectorSet.matches(el)
+    for (let j = 0; j < matches.length; j++) {
+      const {data} = matches[j]
       changes.push(['add', el, data])
     }
 
-    for (const {data, elements} of selectorSet.queryAll(el)) {
-      for (const descendant of elements) {
-        changes.push(['add', descendant, data])
+    const matches2 = selectorSet.queryAll(el)
+    for (let j = 0; j < matches2.length; j++) {
+      const {data, elements} = matches2[j]
+      for (let k = 0; k < elements.length; k++) {
+        changes.push(['add', elements[k], data])
       }
     }
   }
@@ -218,14 +224,16 @@ function addNodes(changes, nodes) {
 //
 // Returns Array of changes
 function removeNodes(changes, nodes) {
-  for (const el of nodes) {
+  for (let i = 0; i < nodes.length; i++) {
+    const el = nodes[i]
     if (!(el instanceof Element)) {
       continue
     }
 
     changes.push(['remove', el, null])
-    for (const descendant of el.getElementsByTagName('*')) {
-      changes.push(['remove', descendant, null])
+    const descendants = el.getElementsByTagName('*')
+    for (let j = 0; j < descendants.length; j++) {
+      changes.push(['remove', descendants[j], null])
     }
   }
 }
@@ -237,9 +245,12 @@ function removeNodes(changes, nodes) {
 //
 // Returns nothing.
 function revalidateOrphanedElements(changes) {
-  for (const observer of documentObservers) {
+  for (let i = 0; i < documentObservers.length; i++) {
+    const observer = documentObservers[i]
     if (observer) {
-      for (const el of observer.elements) {
+      const {elements} = observer
+      for (let j = 0; j < elements.length; j++) {
+        const el = elements[j]
         if (!el.parentNode) {
           changes.push(['remove', el, null])
         }
@@ -260,14 +271,16 @@ function revalidateObservers(changes, node) {
     return
   }
 
-  for (const {data} of selectorSet.matches(node)) {
+  const matches = selectorSet.matches(node)
+  for (let i = 0; i < matches.length; i++) {
+    const {data} = matches[i]
     changes.push(['add', node, data])
   }
 
   const ids = addMap.get(node)
   if (ids) {
-    for (const id of ids) {
-      const observer = documentObservers[id]
+    for (let i = 0; i < ids.length; i++) {
+      const observer = documentObservers[ids[i]]
       if (observer) {
         if (!selectorSet.matchesSelector(node, observer.selector)) {
           changes.push(['remove', node, observer])
@@ -290,13 +303,15 @@ function revalidateDescendantObservers(changes, node) {
   }
 
   revalidateObservers(changes, node)
-  for (const descendant of node.getElementsByTagName('*')) {
-    revalidateObservers(changes, descendant)
+  const descendants = node.getElementsByTagName('*')
+  for (let i = 0; i < descendants.length; i++) {
+    revalidateObservers(changes, descendants[i])
   }
 }
 
 function applyChanges(changes) {
-  for (const change of changes) {
+  for (let i = 0; i < changes.length; i++) {
+    const change = changes[i]
     const type = change[0]
     const el = change[1]
     const observer = change[2]
@@ -315,8 +330,9 @@ function applyChanges(changes) {
 //
 // Returns nothing.
 function stopObserving(observer) {
-  for (const el of observer.elements) {
-    runRemove(el, observer)
+  const elements = observer.elements
+  for (let i = 0; i < elements.length; i++) {
+    runRemove(elements[i], observer)
   }
   selectorSet.remove(observer.selector, observer)
   delete documentObservers[observer.id]
@@ -391,15 +407,11 @@ function handleAsyncChangeEvents() {
   const changes = []
   const targets = changedTargets
   changedTargets = []
-  for (const target of targets) {
-    let els
-    if (target.form) {
-      els = target.form.elements
-    } else {
-      els = target.ownerDocument.getElementsByTagName('input')
-    }
-    for (const el of els) {
-      revalidateObservers(changes, el)
+  for (let i = 0; i < targets.length; i++) {
+    const target = targets[i]
+    const els = target.form ? target.form.elements : target.ownerDocument.getElementsByTagName('input')
+    for (let j = 0; j < els.length; j++) {
+      revalidateObservers(changes, els[j])
     }
   }
   applyChanges(changes)
@@ -413,7 +425,8 @@ document.addEventListener('change', handleChangeEvent, false)
 
 function handleDocumentMutations(mutations) {
   const changes = []
-  for (const mutation of mutations) {
+  for (let i = 0; i < mutations.length; i++) {
+    const mutation = mutations[i]
     if (mutation.type === 'childList') {
       addNodes(changes, mutation.addedNodes)
       removeNodes(changes, mutation.removedNodes)
