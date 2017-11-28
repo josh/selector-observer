@@ -9,7 +9,8 @@ suite('constructor', function() {
     let addRan = false
     let removeRan = false
 
-    const observer = observe(`.${className}`, {
+    const observer = observe({
+      selector: `.${className}`,
       constructor: HTMLDivElement,
       add() {
         addRan = true
@@ -40,7 +41,8 @@ suite('constructor', function() {
     let addRan = false
     let removeRan = false
 
-    const observer = observe(`.${className}`, {
+    const observer = observe({
+      selector: `.${className}`,
       constructor: HTMLDivElement,
       add() {
         addRan = true
