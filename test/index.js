@@ -1,3 +1,3 @@
 import './add-remove'
-import './class'
+import './constructor'
 import './initialize'

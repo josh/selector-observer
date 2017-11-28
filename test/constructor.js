@@ -3,24 +3,21 @@
 import {assert, body, randomClassName, suite, test, timeout} from './utils'
 import {observe} from '../lib'
 
-suite('class', function() {
+suite('constructor', function() {
   test('match', async function() {
     const className = randomClassName()
     let addRan = false
     let removeRan = false
 
-    const observer = observe(
-      `.${className}`,
-      {
-        add() {
-          addRan = true
-        },
-        remove() {
-          removeRan = true
-        }
+    const observer = observe(`.${className}`, {
+      constructor: HTMLDivElement,
+      add() {
+        addRan = true
       },
-      HTMLDivElement
-    )
+      remove() {
+        removeRan = true
+      }
+    })
 
     const el = document.createElement('div')
     el.className = className
@@ -43,18 +40,15 @@ suite('class', function() {
     let addRan = false
     let removeRan = false
 
-    const observer = observe(
-      `.${className}`,
-      {
-        add() {
-          addRan = true
-        },
-        remove() {
-          removeRan = true
-        }
+    const observer = observe(`.${className}`, {
+      constructor: HTMLDivElement,
+      add() {
+        addRan = true
       },
-      HTMLDivElement
-    )
+      remove() {
+        removeRan = true
+      }
+    })
 
     const el = document.createElement('span')
     el.className = className

@@ -10,13 +10,13 @@ declare module.exports: {
   //
   observe<T: Element>(
     selector: string,
-    handlersInit: HandlersObject<T> | Function,
-    klassOptional: ?Class<T>
+    handlersInit: Options<T> | Function
   ): Observer<T>
 }
 
 // Valid observe handlers.
-type HandlersObject<T: Element> = {|
+type Options<T: Element> = {|
+  constructor?: Class<T>,
   initialize?: InitializerCallback<T>,
   add?: AddCallback<T>,
   remove?: RemoveCallback<T>
