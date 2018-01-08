@@ -60,10 +60,10 @@ type InitializerCallbacks<T: Element> = {|
   remove?: RemoveCallback<T>
 |}
 
-// After installing an observer, an object is returned with a `stop()` function
+// After installing an observer, an object is returned with a `abort()` function
 // to clean up the observer.
 type Observer<T: Element> = {|
   // const observer = observe('.foo', {})
-  // observer.stop()
-  stop: () => void
+  // observer.abort()
+  abort: () => void
 |}

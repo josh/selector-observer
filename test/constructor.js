@@ -33,7 +33,7 @@ suite('constructor', function() {
     assert.equal(addRan, true, 'add ran')
     assert.equal(removeRan, true, 'remove ran')
 
-    observer.stop()
+    observer.abort()
   })
 
   test('mismatch', async function() {
@@ -63,6 +63,6 @@ suite('constructor', function() {
     assert.equal(addRan, false, 'add ran')
     assert.equal(removeRan, false, 'remove ran')
 
-    observer.stop()
+    observer.abort()
   })
 })

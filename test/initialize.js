@@ -23,7 +23,7 @@ suite('initialize', function() {
 
     assert.equal(initializeRan, true, 'initialize ran')
 
-    observer.stop()
+    observer.abort()
   })
 
   test('multiple', async function() {
@@ -47,6 +47,6 @@ suite('initialize', function() {
       body.removeChild(el)
     }
 
-    observer.stop()
+    observer.abort()
   })
 })

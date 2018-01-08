@@ -31,7 +31,7 @@ suite('add/remove', function() {
     assert.equal(addRan, true, 'add ran')
     assert.equal(removeRan, true, 'remove ran')
 
-    observer.stop()
+    observer.abort()
   })
 
   test('multiple', async function() {
@@ -65,6 +65,6 @@ suite('add/remove', function() {
       times++
     }
 
-    observer.stop()
+    observer.abort()
   })
 })
