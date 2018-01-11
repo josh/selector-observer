@@ -1,4 +1,5 @@
 import './add-remove'
+import './checked-pseudo-class'
 import './constructor'
 import './initialize'
 import './shadow-dom'
