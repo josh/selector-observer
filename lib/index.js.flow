@@ -1,15 +1,19 @@
 /* @flow */
 
-declare module.exports: {
-  // Public: Install document observer.
-  //
-  //   observe('.foo', {
-  //     add(el) { console.log(el, 'was added to the document') }
-  //     remove(el) { console.log(el, 'was removed from the document') }
-  //   })
-  //
-  observe: Observe<*>
+declare export default class SelectorObserver {
+  constructor(rootNode: Node): SelectorObserver;
+  disconnect(): void;
+  observe: Observe<*>;
 }
+
+// Public: Install document observer.
+//
+//   observe('.foo', {
+//     add(el) { console.log(el, 'was added to the document') }
+//     remove(el) { console.log(el, 'was removed from the document') }
+//   })
+//
+declare export var observe: Observe<*>
 
 // Valid observe() call signatures.
 type ObserveA<T> = <T>(string, InitializerCallback<T>) => Observer<T>
