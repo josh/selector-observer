@@ -6,6 +6,7 @@ export default {
     file: 'dist/index.umd.js',
     format: 'umd',
     name: 'SelectorObserver',
+    exports: 'named',
     globals: {
       'selector-set': 'SelectorSet'
     }
