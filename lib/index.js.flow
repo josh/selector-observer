@@ -6,6 +6,12 @@ declare export default class SelectorObserver {
   observe: Observe<*>;
 }
 
+// Valid observe() call signatures.
+type ObserveA<T> = <T>(string, InitializerCallback<T>) => Observer<T>
+type ObserveB<T> = <T>(string, Options<T>) => Observer<T>
+type ObserveC<T> = <T>(Options<T>) => Observer<T>
+type Observe<T: Element> = ObserveA<T> & ObserveB<T> & ObserveC<T>
+
 // Public: Install document observer.
 //
 //   observe('.foo', {
@@ -14,12 +20,6 @@ declare export default class SelectorObserver {
 //   })
 //
 declare export var observe: Observe<*>
-
-// Valid observe() call signatures.
-type ObserveA<T> = <T>(string, InitializerCallback<T>) => Observer<T>
-type ObserveB<T> = <T>(string, Options<T>) => Observer<T>
-type ObserveC<T> = <T>(Options<T>) => Observer<T>
-type Observe<T: Element> = ObserveA<T> & ObserveB<T> & ObserveC<T>
 
 // Valid observe handlers.
 type Options<T: Element> = {|
