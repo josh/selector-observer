@@ -138,8 +138,8 @@ When using the flow type checker, elements passed to add and remove hooks will b
 
 ```javascript
 observe('.any-element', {
-  add(el: /* Element */) {},
-  remove(el: /* Element */) {}
+  add(el /*: Element */) {},
+  remove(el /*: Element */) {}
 })
 ```
 
@@ -148,8 +148,8 @@ If you known the target element is a specific HTML element like a `<form>`, you 
 ```javascript
 observe('.some-form', {
   constructor: HTMLFormElement,
-  add(form: /* HTMLFormElement */) {},
-  remove(form: /* HTMLFormElement */) {}
+  add(form /*: HTMLFormElement */) {},
+  remove(form /*: HTMLFormElement */) {}
 })
 ```
 
