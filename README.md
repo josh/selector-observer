@@ -2,6 +2,34 @@
 
 selector-observer allows you to monitor DOM elements that match a CSS selector. Rather than imperatively querying the DOM, register an observer for a CSS selector and trigger behavior whenever those elements appear on the page. Common uses include: registering event handlers, initialize a component or plugin, and .
 
+## Why
+
+It's a common jQuery practice to initialize code inside a jQuery ready function.
+
+> The .ready() method offers a way to run JavaScript code as soon as the page's Document Object Model (DOM) becomes safe to manipulate.
+
+```javascript
+$(document).ready(function() {
+  $('p.hello').text('The DOM is now loaded and can be manipulated.')
+})
+```
+
+The issue with this approach is that this initialize code is only ran once per page load. Modern web pages change over time after the initial load. This example depends on a `<p class="hello">` being rendered on the server and being on the initial page load. But if it's inserted later via AJAX or dynamically through some other JS, it won't be found.
+
+Instead of imperatively querying the DOM, we could declare the selectors we needed to operate on.
+
+```javascript
+import {observe} from 'selector-observer'
+
+observe('p.hello', {
+  add(el) {
+    $(el).text('The DOM is now loaded and can be manipulated.')
+  }
+})
+```
+
+Using the `observe` helper, any matching element matching `p.hello` will trigger the `add` hook running our initialization code.
+
 ## Usage
 
 Two types of APIs are provide: a functional singleton API and a class based API that allows you to change the scope of observation.
