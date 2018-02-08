@@ -264,3 +264,11 @@ observe('.foo', {
   }
 })
 ```
+
+## See Also
+
+* [MutationObserver](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver)
+* [rkusa/selector-observer](https://github.com/rkusa/selector-observer)
+* [rafaelw/mutation-summary](https://github.com/rafaelw/mutation-summary)
+* [csuwildcat/SelectorListener](https://github.com/csuwildcat/SelectorListener)
+* [Live Query](https://github.com/hazzik/livequery)
