@@ -4,7 +4,9 @@ selector-observer allows you to monitor DOM elements that match a CSS selector. 
 
 ## Why
 
-It is a common jQuery practice to initialize code inside a jQuery ready function.
+It is a common jQuery practice to initialize code inside a jQuery [ready] function.
+
+[ready]: http://api.jquery.com/ready/
 
 > The .ready() method offers a way to run JavaScript code as soon as the page's Document Object Model (DOM) becomes safe to manipulate.
 
@@ -14,7 +16,7 @@ $(document).ready(function() {
 })
 ```
 
-The issue with this approach is that this initialize code is only run once per page load. Modern web pages change over time after the initial load. This example depends on a `<p class="hello">` being rendered on the server and being on the initial page load. However, if it is inserted later via AJAX or dynamically through some other JS, it will not be found.
+The issue with this approach is that this initialization code is run only once per page load. Modern web pages change over time after the initial load. This example depends on a `<p class="hello">` being rendered on the server and being on the initial page load. However, if it is inserted later via AJAX or dynamically through some other JS, it will not be found.
 
 Instead of imperatively querying the DOM, we could declare the selectors we needed to operate on.
 
@@ -34,7 +36,7 @@ Using the `observe` helper, any matching element matching `p.hello` will trigger
 
 Two types of APIs are provided: a functional singleton API and a class-based API that allows you to change the scope of observation.
 
-The `observe` function will install on observer on the current `document`.
+The `observe` function will install an observer on the current `document`.
 
 ```javascript
 import {observe} from 'selector-observer'
@@ -49,7 +51,9 @@ observe('.foo', {
 })
 ```
 
-Alternatively, the class-based `SelectorObserver` allows you to configure the root element. This API is similar to `MutationObserver`.
+Alternatively, the class-based `SelectorObserver` allows you to configure the root element. This API is similar to [`MutationObserver`][mutation].
+
+[mutation]: https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
 
 ```javascript
 import SelectorObserver from 'selector-observer'
@@ -71,7 +75,7 @@ observer.observe('.foo', {
 
 ### Event Handlers
 
-`selector-observer` can help automatically install event handlers on any matching elements and ensure a cleanup stage ran. This is often necessary inside of using an event delegation technique if the event does not bubble.
+`selector-observer` can help automatically install event handlers on any matching elements and ensure a cleanup stage ran. This is often necessary instead of using an event delegation technique if the event does not bubble.
 
 ```javascript
 import {observe} from 'selector-observer'
@@ -98,7 +102,7 @@ observe('.dropzone', {
 
 ### Initialize third-party component or plugin
 
-Many third-party component or plugin libraries require a manual initialize step to be installed on a given element. The add and remove hooks can be used if the plugin provides a cleanup hook. Often these libraries omit that kind of API too. To work around this, `observe` provides an `initialize` hook that only runs once per a given element.
+Many third-party component or plugin libraries require a manual initialization step to be installed on a given element. The add and remove hooks can be used if the plugin provides a cleanup hook. Often these libraries omit that kind of API too. To work around this, `observe` provides an `initialize` hook that only runs once per a given element.
 
 This example initializes the `tippy` tooltip library on any `btn` buttons on the page.
 
@@ -162,7 +166,9 @@ However, not all events types will work with `delegated-events`. For the event t
 
 ## constructor matching
 
-When using the flow type checker, elements passed to add and remove hooks will be typed as `Element`. CSS selectors could match any HTML element and even SVG elements.
+When using the [flow] type checker, elements passed to add and remove hooks will be typed as `Element`. CSS selectors could match any HTML element and even SVG elements.
+
+[flow]: https://flow.org/
 
 ```javascript
 observe('.any-element', {
@@ -191,7 +197,7 @@ import {observe} from 'selector-observer'
 observe('.foo', {
   initialize(el) {
     console.log('initialize')
-  },
+  }
   add(el) {
     console.log('add')
   },
