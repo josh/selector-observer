@@ -191,7 +191,7 @@ import {observe} from 'selector-observer'
 observe('.foo', {
   initialize(el) {
     console.log('initialize')
-  }
+  },
   add(el) {
     console.log('add')
   },
