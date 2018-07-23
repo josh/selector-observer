@@ -265,10 +265,23 @@ observe('.foo', {
 })
 ```
 
+## Observables
+
+RxJS—and other compatible observable libraries—that return a subscription object can automatically be disposed when elements are removed from the page.
+
+```js
+import {observe} from 'selector-observer'
+import {fromEvent} from 'rxjs'
+
+observe('button', {
+  subscribe: button => fromEvent(button, 'click').subscribe(() => console.log('Clicked!'))
+})
+```
+
 ## See Also
 
-* [MutationObserver](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver)
-* [rkusa/selector-observer](https://github.com/rkusa/selector-observer)
-* [rafaelw/mutation-summary](https://github.com/rafaelw/mutation-summary)
-* [csuwildcat/SelectorListener](https://github.com/csuwildcat/SelectorListener)
-* [Live Query](https://github.com/hazzik/livequery)
+- [MutationObserver](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver)
+- [rkusa/selector-observer](https://github.com/rkusa/selector-observer)
+- [rafaelw/mutation-summary](https://github.com/rafaelw/mutation-summary)
+- [csuwildcat/SelectorListener](https://github.com/csuwildcat/SelectorListener)
+- [Live Query](https://github.com/hazzik/livequery)

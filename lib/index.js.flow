@@ -27,7 +27,8 @@ type Options<T: Element> = {|
   constructor?: Class<T>,
   initialize?: InitializerCallback<T>,
   add?: AddCallback<T>,
-  remove?: RemoveCallback<T>
+  remove?: RemoveCallback<T>,
+  subscribe?: SubscribeCallback<T>
 |}
 
 // Valid function type for observer add() callback.
@@ -47,6 +48,12 @@ type RemoveCallback<T: Element> = (el: T) => void
 //   initialize(el) { console.log(el, 'was added to the document for the first time') }
 //
 type InitializerCallback<T: Element> = (el: T) => void | InitializerCallbacks<T>
+
+// Valid function type for observer subscribe() callback.
+//
+//   subscribe(el) { return listen(el, 'click').subscribe() }
+//
+type SubscribeCallback<T: Element> = (el: T) => Subscription
 
 // Callbacks may also be dynamicially defined in an initializer callback to create
 // a closure around shared state.
@@ -71,3 +78,8 @@ type Observer<T: Element> = {|
   // observer.abort()
   abort: () => void
 |}
+
+// Proposed TC39 Subscription interface
+interface Subscription {
+  unsubscribe(): void;
+}
