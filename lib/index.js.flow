@@ -1,4 +1,4 @@
-/* @flow */
+/* @flow strict */
 
 declare export default class SelectorObserver {
   constructor(rootNode: Node): SelectorObserver;
