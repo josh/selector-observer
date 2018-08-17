@@ -3,14 +3,14 @@
 declare export default class SelectorObserver {
   constructor(rootNode: Node): SelectorObserver;
   disconnect(): void;
-  observe: Observe<*>;
+  observe: Observe;
 }
 
 // Valid observe() call signatures.
-type ObserveA<T> = <T>(string, InitializerCallback<T>) => Observer<T>
-type ObserveB<T> = <T>(string, Options<T>) => Observer<T>
-type ObserveC<T> = <T>(Options<T>) => Observer<T>
-type Observe<T: Element> = ObserveA<T> & ObserveB<T> & ObserveC<T>
+type ObserveA = (string, InitializerCallback<Element>) => Observer
+type ObserveB = <T: Element>(string, Options<T>) => Observer
+type ObserveC = <T: Element>(Options<T>) => Observer
+type Observe = ObserveA & ObserveB & ObserveC
 
 // Public: Install document observer.
 //
@@ -19,17 +19,25 @@ type Observe<T: Element> = ObserveA<T> & ObserveB<T> & ObserveC<T>
 //     remove(el) { console.log(el, 'was removed from the document') }
 //   })
 //
-declare export var observe: Observe<*>
+declare export var observe: Observe
 
 // Valid observe handlers.
-type Options<T: Element> = {|
-  selector?: string,
-  constructor?: Class<T>,
-  initialize?: InitializerCallback<T>,
-  add?: AddCallback<T>,
-  remove?: RemoveCallback<T>,
-  subscribe?: SubscribeCallback<T>
-|}
+type Options<T: Element> =
+  | {|
+      constructor: Class<T>,
+      selector?: string,
+      initialize?: InitializerCallback<T>,
+      add?: AddCallback<T>,
+      remove?: RemoveCallback<T>,
+      subscribe?: SubscribeCallback<T>
+    |}
+  | {|
+      selector?: string,
+      initialize?: InitializerCallback<Element>,
+      add?: AddCallback<Element>,
+      remove?: RemoveCallback<Element>,
+      subscribe?: SubscribeCallback<Element>
+    |}
 
 // Valid function type for observer add() callback.
 //
@@ -55,7 +63,7 @@ type InitializerCallback<T: Element> = (el: T) => void | InitializerCallbacks<T>
 //
 type SubscribeCallback<T: Element> = (el: T) => Subscription
 
-// Callbacks may also be dynamicially defined in an initializer callback to create
+// Callbacks may also be dynamically defined in an initializer callback to create
 // a closure around shared state.
 //
 //   initialize(el) {
@@ -73,7 +81,7 @@ type InitializerCallbacks<T: Element> = {|
 
 // After installing an observer, an object is returned with a `abort()` function
 // to clean up the observer.
-type Observer<T: Element> = {|
+type Observer = {|
   // const observer = observe('.foo', {})
   // observer.abort()
   abort: () => void
