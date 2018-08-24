@@ -1,6 +1,6 @@
 {
   "name": "selector-observer",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Allows you to monitor DOM elements that match a CSS selector",
   "main": "dist/index.umd.js",
   "module": "dist/index.esm.js",
@@ -25,7 +25,12 @@
     "url": "https://github.com/josh/selector-observer/issues"
   },
   "homepage": "https://github.com/josh/selector-observer#readme",
-  "files": ["dist/index.esm.js.flow", "dist/index.esm.js", "dist/index.umd.js.flow", "dist/index.umd.js"],
+  "files": [
+    "dist/index.esm.js.flow",
+    "dist/index.esm.js",
+    "dist/index.umd.js.flow",
+    "dist/index.umd.js"
+  ],
   "dependencies": {
     "selector-set": "^1.1"
   },
