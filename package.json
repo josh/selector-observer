@@ -4,13 +4,14 @@
   "description": "Allows you to monitor DOM elements that match a CSS selector",
   "main": "dist/index.umd.js",
   "module": "dist/index.esm.js",
+  "types": "dist/index.esm.d.ts",
   "scripts": {
     "test": "npm run build-test && npm run flow && npm run lint && npm run karma",
     "lint": "eslint .",
     "flow": "flow check",
     "karma": "karma start --single-run --browsers ChromeHeadless karma.conf.js",
-    "build-umd": "rollup -c rollup.config.umd.js && cp lib/index.js.flow dist/index.umd.js.flow",
-    "build-esm": "rollup -c rollup.config.esm.js && cp lib/index.js.flow dist/index.esm.js.flow",
+    "build-umd": "rollup -c rollup.config.umd.js && cp lib/index.js.flow dist/index.umd.js.flow && cp lib/index.d.ts dist/index.umd.d.ts",
+    "build-esm": "rollup -c rollup.config.esm.js && cp lib/index.js.flow dist/index.esm.js.flow && cp lib/index.d.ts dist/index.esm.d.ts",
     "build-test": "rollup -c rollup.config.test.js",
     "build": "npm run build-umd && npm run build-esm",
     "prepack": "npm run build"
@@ -26,8 +27,10 @@
   },
   "homepage": "https://github.com/josh/selector-observer#readme",
   "files": [
+    "dist/index.esm.d.ts",
     "dist/index.esm.js.flow",
     "dist/index.esm.js",
+    "dist/index.umd.d.ts",
     "dist/index.umd.js.flow",
     "dist/index.umd.js"
   ],
